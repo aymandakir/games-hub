@@ -2,7 +2,9 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <title>HUB GAMES</title>
     <style>
         * {
@@ -216,22 +218,63 @@
             font-size: 14px;
         }
 
-        /* Responsive design */
-        @media (max-width: 768px) {
+        /* Responsive design - Tablets (iPad) */
+        @media (max-width: 1024px) and (min-width: 769px) {
             .header {
-                padding: 40px 20px 30px;
+                padding: 50px 30px 35px;
             }
 
             .logo {
-                font-size: 48px;
+                font-size: 64px;
             }
 
             .tagline {
-                font-size: 16px;
+                font-size: 18px;
             }
 
             .container {
-                padding: 0 20px 60px;
+                padding: 0 30px 70px;
+            }
+
+            .games-grid {
+                grid-template-columns: repeat(2, 1fr);
+                gap: 22px;
+                margin-top: 35px;
+            }
+
+            .game-card {
+                padding: 28px;
+            }
+
+            .game-icon {
+                font-size: 56px;
+            }
+
+            .game-title {
+                font-size: 26px;
+            }
+
+            .game-description {
+                font-size: 15px;
+            }
+        }
+
+        /* Responsive design - Large phones and small tablets */
+        @media (max-width: 768px) and (min-width: 481px) {
+            .header {
+                padding: 40px 24px 30px;
+            }
+
+            .logo {
+                font-size: 52px;
+            }
+
+            .tagline {
+                font-size: 17px;
+            }
+
+            .container {
+                padding: 0 24px 60px;
             }
 
             .games-grid {
@@ -245,11 +288,192 @@
             }
 
             .game-icon {
-                font-size: 48px;
+                font-size: 52px;
             }
 
             .game-title {
                 font-size: 24px;
+            }
+
+            .game-description {
+                font-size: 15px;
+            }
+
+            .footer {
+                padding: 50px 24px;
+            }
+        }
+
+        /* Responsive design - Small phones */
+        @media (max-width: 480px) {
+            .header {
+                padding: 30px 16px 24px;
+            }
+
+            .logo {
+                font-size: 42px;
+                letter-spacing: -1px;
+                margin-bottom: 8px;
+            }
+
+            .tagline {
+                font-size: 14px;
+                letter-spacing: 0.3px;
+            }
+
+            .container {
+                padding: 0 16px 50px;
+            }
+
+            .games-grid {
+                grid-template-columns: 1fr;
+                gap: 16px;
+                margin-top: 24px;
+            }
+
+            .game-card {
+                padding: 20px;
+                border-radius: 16px;
+            }
+
+            .game-card:hover {
+                transform: translateY(-4px) scale(1.01);
+            }
+
+            .game-icon {
+                font-size: 44px;
+                margin-bottom: 16px;
+            }
+
+            .game-title {
+                font-size: 22px;
+                margin-bottom: 6px;
+            }
+
+            .game-description {
+                font-size: 14px;
+                line-height: 1.5;
+                margin-bottom: 12px;
+            }
+
+            .game-meta {
+                font-size: 12px;
+                gap: 12px;
+                flex-wrap: wrap;
+            }
+
+            .game-tag {
+                padding: 3px 10px;
+                font-size: 11px;
+            }
+
+            .coming-soon-badge {
+                top: 12px;
+                right: 12px;
+                padding: 5px 10px;
+                font-size: 11px;
+            }
+
+            .footer {
+                padding: 40px 16px;
+                font-size: 12px;
+            }
+        }
+
+        /* Extra small phones */
+        @media (max-width: 360px) {
+            .header {
+                padding: 24px 12px 20px;
+            }
+
+            .logo {
+                font-size: 36px;
+            }
+
+            .tagline {
+                font-size: 13px;
+            }
+
+            .container {
+                padding: 0 12px 40px;
+            }
+
+            .game-card {
+                padding: 16px;
+            }
+
+            .game-icon {
+                font-size: 40px;
+                margin-bottom: 12px;
+            }
+
+            .game-title {
+                font-size: 20px;
+            }
+
+            .game-description {
+                font-size: 13px;
+            }
+        }
+
+        /* Landscape orientation for phones */
+        @media (max-height: 500px) and (orientation: landscape) {
+            .header {
+                padding: 20px 24px 16px;
+            }
+
+            .logo {
+                font-size: 40px;
+                margin-bottom: 4px;
+            }
+
+            .tagline {
+                font-size: 14px;
+            }
+
+            .container {
+                padding: 0 24px 40px;
+            }
+
+            .games-grid {
+                grid-template-columns: repeat(2, 1fr);
+                gap: 16px;
+                margin-top: 20px;
+            }
+
+            .game-card {
+                padding: 16px;
+            }
+
+            .game-icon {
+                font-size: 36px;
+                margin-bottom: 8px;
+            }
+
+            .game-title {
+                font-size: 18px;
+                margin-bottom: 4px;
+            }
+
+            .game-description {
+                font-size: 12px;
+                margin-bottom: 8px;
+            }
+        }
+
+        /* Touch device optimizations */
+        @media (hover: none) and (pointer: coarse) {
+            .game-card {
+                -webkit-tap-highlight-color: rgba(255, 255, 255, 0.1);
+            }
+
+            .game-card:active {
+                transform: translateY(-2px) scale(0.98);
+                background: var(--card-hover);
+            }
+
+            .game-card:hover {
+                transform: none;
             }
         }
 
