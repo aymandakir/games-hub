@@ -10,13 +10,28 @@ import { motion, AnimatePresence } from 'framer-motion'
 export default function GamePage() {
   const currentScreen = useGameStore(state => state.ui.currentScreen)
   const player = useGameStore(state => state.player)
+  const setScreen = useGameStore(state => state.setScreen)
 
   // Initialize to character select if no character chosen
   useEffect(() => {
-    if (!player.character && currentScreen === 'exploration') {
-      useGameStore.getState().setScreen('character-select')
+    console.log('[GamePage] Current screen:', currentScreen, 'Character:', player.character)
+    
+    if (!player.character) {
+      if (currentScreen !== 'character-select') {
+        console.log('[GamePage] No character selected, showing character select')
+        setScreen('character-select')
+      }
     }
-  }, [player.character, currentScreen])
+  }, [player.character, currentScreen, setScreen])
+  
+  // Fallback: ensure we always show something
+  useEffect(() => {
+    const screen = useGameStore.getState().ui.currentScreen
+    if (!screen || screen === 'title') {
+      console.log('[GamePage] Screen not set, defaulting to character-select')
+      setScreen('character-select')
+    }
+  }, [setScreen])
 
   return (
     <AnimatePresence mode="wait">

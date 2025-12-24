@@ -1,21 +1,5 @@
 import { MoveType, Alignment, RoundResult, Enemy, EnemyPattern, Move } from '@/lib/types/game'
 import { getDefaultMove } from '@/lib/constants/moves'
-import { getAudioManager } from '@/lib/systems/audio'
-
-// Initialize combat with audio
-export async function initializeCombat(enemy: Enemy): Promise<void> {
-  const audio = getAudioManager()
-  
-  // Play appropriate combat music based on enemy type
-  if (enemy.isBoss) {
-    await audio.playMusic('combat_boss', true)
-  } else {
-    await audio.playMusic('combat_normal', true)
-  }
-  
-  // Combat start sound
-  audio.playSFX('button_click')
-}
 
 // Determine winner of a round
 export function resolveRound(
@@ -23,7 +7,6 @@ export function resolveRound(
   enemyMove: MoveType,
   playerAlignment: Alignment
 ): RoundResult {
-  const audio = getAudioManager()
   let winner: 'player' | 'enemy' | 'tie'
   let playerDamage = 0
   let enemyDamage = 0
@@ -33,7 +16,6 @@ export function resolveRound(
     winner = 'tie'
     playerDamage = 5 // Stamina loss
     enemyDamage = 5
-    audio.playSFX('button_click', 0.5) // Clash sound
   } else if (
     (playerMove === 'rock' && enemyMove === 'scissors') ||
     (playerMove === 'paper' && enemyMove === 'rock') ||
@@ -43,15 +25,11 @@ export function resolveRound(
     const playerMoveData = getDefaultMove(playerMove)
     playerDamage = calculateDamage(playerMoveData, playerAlignment, playerMove, false)
     enemyDamage = 0
-    audio.playSFX(`${playerMove}_hit`)
-    audio.playSFX('button_click', 0.7, 1.2) // Victory sound
   } else {
     winner = 'enemy'
     const enemyMoveData = getDefaultMove(enemyMove)
     enemyDamage = calculateDamage(enemyMoveData, { rock: 33, paper: 34, scissors: 33 }, enemyMove, false)
     playerDamage = 0
-    audio.playSFX(`${enemyMove}_hit`, 0.8)
-    audio.playSFX('button_click', 0.5, 0.8) // Hurt sound
   }
 
   return {
@@ -159,47 +137,6 @@ export function canUseSymbolBreak(
   currentHP: number
 ): boolean {
   return resolve >= 100 || (consecutiveWins >= 3 && currentHP <= 50)
-}
-
-// Trigger Symbol Break with audio
-export function triggerSymbolBreak(character: 'kael' | 'lyra'): void {
-  const audio = getAudioManager()
-  
-  // Lower music for dramatic effect
-  audio.setMusicVolume(0.3)
-  
-  // Play ultimate sound
-  if (character === 'kael') {
-    audio.playSFX('ink_storm', 1.0)
-  } else {
-    audio.playSFX('blade_cascade', 1.0)
-  }
-  
-  // Restore music volume after 3 seconds
-  setTimeout(() => {
-    audio.setMusicVolume(0.7)
-  }, 3000)
-}
-
-// End combat with audio
-export function endCombat(result: 'victory' | 'defeat'): void {
-  const audio = getAudioManager()
-  
-  // Stop combat music
-  audio.stopMusic(true)
-  
-  // Play victory/defeat stinger
-  if (result === 'victory') {
-    audio.playSFX('quest_complete', 1.0)
-  } else {
-    audio.playSFX('button_click', 0.5, 0.7)
-  }
-  
-  // Return to exploration music after delay
-  setTimeout(() => {
-    // This would get current location and play appropriate theme
-    audio.playMusic('crosspoint_theme', true)
-  }, 2000)
 }
 
 // Apply move effects (simplified - full implementation would track status effects)

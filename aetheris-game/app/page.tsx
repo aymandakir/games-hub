@@ -1,59 +1,38 @@
 'use client'
 
-import { motion } from 'framer-motion'
-import { useRouter } from 'next/navigation'
 import { useGameStore } from '@/lib/store/gameStore'
-import Button from '@/components/ui/Button'
+import { Button } from '@/components/ui/Button'
+import { Card } from '@/components/ui/Card'
 
-export default function TitleScreen() {
-  const router = useRouter()
+export default function HomePage() {
+  const setScreen = useGameStore(state => state.setScreen)
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-neutral-bg via-rock-dark to-neutral-bg flex items-center justify-center">
-      <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.8 }}
-        className="text-center space-y-8"
-      >
-        <motion.h1
-          initial={{ opacity: 0, scale: 0.9 }}
-          animate={{ opacity: 1, scale: 1 }}
-          transition={{ delay: 0.2, duration: 0.6 }}
-          className="text-7xl md:text-9xl font-bold font-fantasy bg-gradient-to-r from-rock-highlight via-paper-accent to-scissors-highlight bg-clip-text text-transparent"
-        >
-          AETHERIS
-        </motion.h1>
-        <motion.p
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ delay: 0.4, duration: 0.6 }}
-          className="text-2xl md:text-3xl text-neutral-text/80 font-fantasy"
-        >
-          The Symbol War
-        </motion.p>
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.6, duration: 0.6 }}
-          className="pt-8"
-        >
+    <div className="min-h-screen bg-gradient-to-b from-gray-900 to-black flex items-center justify-center p-4">
+      <Card className="max-w-2xl w-full p-12 text-center">
+        <div className="mb-8">
+          <h1 className="text-7xl font-bold mb-4 bg-gradient-to-r from-blue-400 via-purple-500 to-pink-500 bg-clip-text text-transparent">
+            AETHERIS
+          </h1>
+          <p className="text-3xl text-gray-400 font-light">The Symbol War</p>
+        </div>
+
+        <p className="text-lg text-gray-300 mb-8 max-w-md mx-auto">
+          An epic fantasy RPG where Rock, Paper, and Scissors define everything—from magic to culture to combat.
+        </p>
+
+        <div className="space-y-4">
           <Button
-            onClick={() => {
-              console.log('[Title] Starting new game...')
-              const { setScreen } = useGameStore.getState()
-              setScreen('character-select')
-              router.push('/game')
-            }}
+            onClick={() => setScreen('character_select')}
             variant="primary"
-            size="lg"
-            className="text-xl px-12 py-6"
+            className="w-full text-xl py-6 hover:scale-105 transform"
           >
-            Begin Adventure
+            ⚔️ Begin Adventure
           </Button>
-        </motion.div>
-      </motion.div>
+        </div>
+
+        <p className="text-sm text-gray-500 mt-8">Choose your character and restore balance to Aetheris</p>
+      </Card>
     </div>
   )
 }
-

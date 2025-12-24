@@ -24,6 +24,7 @@ import {
   canUseSymbolBreak,
   calculateResolveGain,
 } from '@/lib/systems/combat'
+import { getSaveSystem, SaveMetadata } from '@/lib/systems/save-system'
 
 interface GameStore {
   // State slices
@@ -47,6 +48,17 @@ interface GameStore {
   updateNPCRelationship: (npcId: string, change: number) => void
   setScreen: (screen: GameScreen) => void
   resetGame: () => void
+
+  // Save/Load actions
+  saveGame: (slotId: string) => Promise<void>
+  loadGame: (slotId: string) => Promise<void>
+  quickSave: () => Promise<void>
+  getAllSaves: () => Promise<SaveMetadata[]>
+  deleteSave: (slotId: string) => Promise<void>
+  lastAutoSave: number | null
+  autoSaveEnabled: boolean
+  setAutoSaveEnabled: (enabled: boolean) => void
+  playtime: number
 }
 
 const initialPlayerState: PlayerState = {
@@ -96,6 +108,21 @@ const initialUIState: UIState = {
   activeModal: null,
   animationsInProgress: [],
   showDebugPanel: false,
+}
+
+// Helper function to show notifications
+function showNotification(message: string, type: 'success' | 'error' | 'info' = 'info'): void {
+  // Create notification element
+  const notification = document.createElement('div')
+  notification.className = `fixed top-4 right-4 px-4 py-2 rounded shadow-lg z-50 ${
+    type === 'success' ? 'bg-green-600' : type === 'error' ? 'bg-red-600' : 'bg-blue-600'
+  } text-white`
+  notification.textContent = message
+  document.body.appendChild(notification)
+
+  setTimeout(() => {
+    notification.remove()
+  }, 3000)
 }
 
 export const useGameStore = create<GameStore>((set, get) => ({
@@ -452,7 +479,77 @@ export const useGameStore = create<GameStore>((set, get) => ({
       combat: initialCombatState,
       story: initialStoryState,
       ui: initialUIState,
+      playtime: 0,
+      lastAutoSave: null,
     })
+  },
+
+  // Save/Load actions
+  playtime: 0,
+  lastAutoSave: null,
+  autoSaveEnabled: true,
+
+  saveGame: async (slotId: string) => {
+    const saveSystem = await getSaveSystem()
+    const currentState = get()
+
+    const saveData = {
+      version: '1.0.0',
+      timestamp: Date.now(),
+      playtime: currentState.playtime,
+      player: currentState.player,
+      story: currentState.story,
+      combat: currentState.combat,
+      inventory: currentState.player.inventory,
+      relationships: currentState.story.npcRelationships,
+      quests: currentState.story.completedQuests,
+      currentLocation: currentState.player.currentLocation,
+      unlockedLocations: currentState.story.unlockedLocations,
+      storyFlags: currentState.story.storyFlags,
+      achievements: [],
+    }
+
+    await saveSystem.saveGame(slotId, saveData)
+    set({ lastAutoSave: Date.now() })
+    showNotification('Game saved successfully!', 'success')
+  },
+
+  loadGame: async (slotId: string) => {
+    const saveSystem = await getSaveSystem()
+    const saveData = await saveSystem.loadGame(slotId)
+
+    if (!saveData) {
+      showNotification('Failed to load save', 'error')
+      return
+    }
+
+    set({
+      player: saveData.player,
+      story: saveData.story,
+      combat: saveData.combat,
+      playtime: saveData.playtime,
+    })
+
+    showNotification('Game loaded successfully!', 'success')
+  },
+
+  quickSave: async () => {
+    await get().saveGame('quicksave')
+  },
+
+  getAllSaves: async () => {
+    const saveSystem = await getSaveSystem()
+    return await saveSystem.getAllSaves()
+  },
+
+  deleteSave: async (slotId: string) => {
+    const saveSystem = await getSaveSystem()
+    await saveSystem.deleteSave(slotId)
+    showNotification('Save deleted', 'info')
+  },
+
+  setAutoSaveEnabled: (enabled: boolean) => {
+    set({ autoSaveEnabled: enabled })
   },
 }))
 

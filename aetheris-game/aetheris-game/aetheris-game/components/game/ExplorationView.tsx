@@ -1,66 +1,20 @@
 'use client'
 
-import { useState, useEffect, useCallback } from 'react'
 import { motion } from 'framer-motion'
 import { useGameStore } from '@/lib/store/gameStore'
 import { getLocation } from '@/lib/constants/locations'
-import { getAudioManager } from '@/lib/systems/audio'
 import Card from '@/components/ui/Card'
 import Button from '@/components/ui/Button'
 import ProgressBar from '@/components/ui/ProgressBar'
-import MainMenu from '@/components/ui/MainMenu'
-import ShopView from './ShopView'
-import DialogueManager from '@/components/dialogue/DialogueManager'
 
 export default function ExplorationView() {
-  const [showMenu, setShowMenu] = useState(false)
-  const [showShop, setShowShop] = useState(false)
-  const [showDialogue, setShowDialogue] = useState(false)
-  const [currentDialogue, setCurrentDialogue] = useState<any>(null)
-
   const player = useGameStore(state => state.player)
   const travelToLocation = useGameStore(state => state.travelToLocation)
   const interactWithPoint = useGameStore(state => state.interactWithPoint)
   const startBattle = useGameStore(state => state.startBattle)
 
   const location = getLocation(player.currentLocation)
-  
-  // Play location music - hook at top level, condition inside
-  useEffect(() => {
-    if (location) {
-      const audio = getAudioManager()
-      const regionMusic: Record<string, string> = {
-        rock: 'rock_dominion',
-        paper: 'paper_dominion',
-        scissors: 'scissor_dominion',
-        neutral: 'crosspoint_theme',
-      }
-      audio.playMusic(regionMusic[location.region] || 'crosspoint_theme', true)
-    }
-  }, [location?.region])
-
   if (!location) return null
-
-  const handleInteract = useCallback((pointId: string) => {
-    if (!location) return
-    const point = location.interactivePoints.find(p => p.id === pointId)
-    if (!point) return
-
-    const audio = getAudioManager()
-    audio.playSFX('button_click')
-
-    if (point.type === 'shop') {
-      setShowShop(true)
-    } else if (point.type === 'npc') {
-      // Start dialogue
-      setShowDialogue(true)
-      // Would load dialogue node here
-    } else if (point.type === 'training') {
-      startBattle('brick')
-    } else {
-      interactWithPoint(pointId)
-    }
-  }, [location, interactWithPoint, startBattle, setShowShop, setShowDialogue])
 
   const regionColors = {
     rock: 'rock',
@@ -164,7 +118,7 @@ export default function ExplorationView() {
             {location.interactivePoints.map(point => (
               <Button
                 key={point.id}
-                onClick={() => handleInteract(point.id)}
+                onClick={() => interactWithPoint(point.id)}
                 variant={regionColors[location.region]}
                 className="w-full text-left justify-start"
               >
@@ -201,30 +155,7 @@ export default function ExplorationView() {
         <Button onClick={() => startBattle('brick')} variant="primary" className="w-full">
           Start Tutorial Battle
         </Button>
-
-        {/* Menu Button */}
-        <Button
-          onClick={() => setShowMenu(true)}
-          variant="secondary"
-          className="fixed bottom-4 right-4"
-        >
-          Menu (M)
-        </Button>
       </div>
-
-      {/* Modals */}
-      <MainMenu isOpen={showMenu} onClose={() => setShowMenu(false)} />
-      {showShop && <ShopView shopId="crosspoint_shop" onClose={() => setShowShop(false)} />}
-      {showDialogue && currentDialogue && (
-        <DialogueManager
-          node={currentDialogue}
-          onChoiceSelected={(choiceId, nextNodeId) => {
-            // Handle dialogue choice
-            setShowDialogue(false)
-          }}
-          onClose={() => setShowDialogue(false)}
-        />
-      )}
     </div>
   )
 }
