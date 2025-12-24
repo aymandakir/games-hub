@@ -231,11 +231,15 @@ export interface Quest {
   objectives: QuestObjective[]
   rewards: {
     experience?: number
-    items?: Item[]
+    gold?: number
+    items?: Item[] | string[]
     alignment?: Partial<Alignment>
+    relationship?: Record<string, number>
+    unlocks?: string[]
   }
   act: ActNumber
   region: 'rock' | 'paper' | 'scissors' | 'neutral'
+  status?: 'active' | 'locked' | 'completed'
 }
 
 export interface QuestObjective {
@@ -243,6 +247,8 @@ export interface QuestObjective {
   description: string
   type: 'defeat' | 'collect' | 'talk' | 'explore' | 'use'
   target?: string
+  current?: number
+  required?: number
   completed: boolean
 }
 
