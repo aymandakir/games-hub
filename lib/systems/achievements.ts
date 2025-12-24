@@ -30,7 +30,7 @@ export class AchievementSystem {
 
     // Apply rewards
     if (achievement.reward) {
-      const gameStore = useGameStore.getState()
+      // const gameStore = useGameStore.getState() // Reserved for future use
 
       if (achievement.reward.title) {
         // Would unlock title

@@ -34,6 +34,10 @@ export interface ParticleConfig {
   rotation?: boolean
 }
 
+export interface ParticlePreset extends ParticleConfig {
+  count: number
+}
+
 export class ParticleSystem {
   private particles: Particle[] = []
   private particlePool: Particle[] = []
@@ -169,6 +173,7 @@ export class ParticleSystem {
       if (particle.life <= 0) {
         this.returnParticleToPool(particle)
         this.particles.splice(i, 1)
+        i-- // Adjust index after removal
       }
     }
   }
@@ -250,7 +255,7 @@ export class ParticleSystem {
   }
 }
 
-export const PARTICLE_PRESETS: Record<string, ParticleConfig> = {
+export const PARTICLE_PRESETS: Record<string, ParticlePreset> = {
   rock_hit: {
     count: 12,
     velocity: { min: 2, max: 5 },

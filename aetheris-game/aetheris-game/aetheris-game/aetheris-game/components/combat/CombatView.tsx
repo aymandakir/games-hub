@@ -1,11 +1,8 @@
 'use client'
 
 import { motion, AnimatePresence } from 'framer-motion'
-import { useEffect, useRef } from 'react'
 import { useGameStore } from '@/lib/store/gameStore'
 import { MoveType } from '@/lib/types/game'
-import { getAudioManager } from '@/lib/systems/audio'
-import { initializeCombat, triggerSymbolBreak, endCombat } from '@/lib/systems/combat'
 import Button from '@/components/ui/Button'
 import ProgressBar from '@/components/ui/ProgressBar'
 import { Hand, Shield, Scissors } from 'lucide-react'
@@ -16,7 +13,7 @@ const moveIcons = {
   scissors: Scissors,
 }
 
-const moveColors: Record<'rock' | 'paper' | 'scissors', 'rock' | 'paper' | 'scissors'> = {
+const moveColors = {
   rock: 'rock',
   paper: 'paper',
   scissors: 'scissors',
@@ -27,68 +24,14 @@ export default function CombatView() {
   const player = useGameStore(state => state.player)
   const makeMove = useGameStore(state => state.makeMove)
   const useSymbolBreak = useGameStore(state => state.useSymbolBreak)
-  const particleSystemRef = useRef<any>(null)
-
-  // Initialize audio and particles when combat starts
-  useEffect(() => {
-    if (combat.isActive && combat.enemy) {
-      initializeCombat(combat.enemy)
-      if (typeof window !== 'undefined') {
-        particleSystemRef.current = (window as any).particleSystem
-      }
-    }
-  }, [combat.isActive, combat.enemy])
-
-  // Handle combat end
-  useEffect(() => {
-    if (combat.status === 'victory' || combat.status === 'defeat') {
-      endCombat(combat.status)
-    }
-  }, [combat.status])
 
   if (!combat.isActive || !combat.enemy) {
     return null
   }
 
-  const audio = getAudioManager()
-  
-  // Get variant for enemy type
-  const getEnemyVariant = (type: string): 'rock' | 'paper' | 'scissors' | 'neutral' => {
-    if (type === 'rock' || type === 'paper' || type === 'scissors') {
-      return moveColors[type as keyof typeof moveColors]
-    }
-    return 'neutral'
-  }
-
   const handleMove = (move: MoveType) => {
     if (combat.status === 'waiting') {
-      audio.playSFX('button_click')
       makeMove(move)
-      
-      // Trigger particle effect after a delay (when hit occurs)
-      setTimeout(() => {
-        if (particleSystemRef.current) {
-          const enemyX = window.innerWidth / 2
-          const enemyY = window.innerHeight / 3
-          particleSystemRef.current.emitHitEffect(enemyX, enemyY, move)
-        }
-      }, 500)
-    }
-  }
-
-  const handleSymbolBreak = () => {
-    if (combat.canUseSymbolBreak && player.character) {
-      audio.playSFX('resolve_full')
-      triggerSymbolBreak(player.character)
-      
-      // Full-screen particle effect
-      if (particleSystemRef.current) {
-        particleSystemRef.current.emitSymbolBreak(
-          player.character === 'kael' ? 'ink_storm' : 'blade_cascade'
-        )
-      }
-      
-      useSymbolBreak()
     }
   }
 
@@ -110,7 +53,7 @@ export default function CombatView() {
           <ProgressBar
             current={combat.enemyHP}
             max={combat.enemyMaxHP}
-            variant={getEnemyVariant(combat.enemy.type)}
+            variant={moveColors[combat.enemy.type]}
             label="Enemy HP"
           />
         </motion.div>
@@ -166,7 +109,7 @@ export default function CombatView() {
                 >
                   <Button
                     onClick={() => handleMove(move)}
-                    variant={moveColors[move] as 'rock' | 'paper' | 'scissors'}
+                    variant={moveColors[move]}
                     size="lg"
                     disabled={!isWaiting}
                     className={`
@@ -190,7 +133,7 @@ export default function CombatView() {
               transition={{ repeat: Infinity, duration: 1.5 }}
             >
               <Button
-                onClick={handleSymbolBreak}
+                onClick={useSymbolBreak}
                 variant="primary"
                 size="lg"
                 className="w-full bg-gradient-to-r from-rock-accent via-paper-accent to-scissors-accent text-white"

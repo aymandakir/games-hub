@@ -123,7 +123,7 @@ export class AudioManager {
     }
   }
 
-  async crossfadeMusic(fromTrack: string, toTrack: string, duration = 2): Promise<void> {
+  async crossfadeMusic(_fromTrack: string, toTrack: string, _duration = 2): Promise<void> {
     // Fade out current, fade in new
     this.stopMusic(true)
     await new Promise(resolve => setTimeout(resolve, 500))

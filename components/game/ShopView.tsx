@@ -37,7 +37,7 @@ const mockShop = {
   ],
 }
 
-export default function ShopView({ shopId, onClose }: ShopViewProps) {
+export default function ShopView({ shopId: _shopId, onClose }: ShopViewProps) {
   const [activeTab, setActiveTab] = useState<'buy' | 'sell'>('buy')
   const player = useGameStore(state => state.player)
   const gold = 500 // Mock gold - would come from inventory

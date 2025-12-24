@@ -53,12 +53,12 @@ export interface Inventory {
 }
 
 // Shop operations
-export function getShopInventory(shopId: string, playerState: any): ShopItem[] {
+export function getShopInventory(_shopId: string, _playerState: unknown): ShopItem[] {
   // Would load from constants and filter by requirements
   return []
 }
 
-export function buyItem(shopId: string, itemId: string, playerState: any): boolean {
+export function buyItem(_shopId: string, _itemId: string, _playerState: unknown): boolean {
   // Check if player can afford
   // Check if item is available
   // Deduct gold
@@ -66,7 +66,7 @@ export function buyItem(shopId: string, itemId: string, playerState: any): boole
   return false
 }
 
-export function sellItem(itemId: string, playerState: any): number {
+export function sellItem(_itemId: string, _playerState: unknown): number {
   // Calculate sell price
   // Remove from inventory
   // Add gold
@@ -105,7 +105,7 @@ export function removeItem(inventory: Inventory, itemId: string, quantity: numbe
   return true
 }
 
-export function useItem(inventory: Inventory, itemId: string, playerState: any): void {
+export function useItem(inventory: Inventory, itemId: string, _playerState: unknown): void {
   const item = inventory.items.find(i => i.item.id === itemId)
   if (!item || item.quantity <= 0) return
 

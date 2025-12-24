@@ -1,6 +1,6 @@
 'use client'
 
-import { motion, AnimatePresence } from 'framer-motion'
+import { motion } from 'framer-motion'
 import { useEffect, useRef } from 'react'
 import { useGameStore } from '@/lib/store/gameStore'
 import { MoveType } from '@/lib/types/game'
@@ -53,11 +53,8 @@ export default function CombatView() {
   const audio = getAudioManager()
   
   // Get variant for enemy type
-  const getEnemyVariant = (type: string): 'rock' | 'paper' | 'scissors' | 'neutral' => {
-    if (type === 'rock' || type === 'paper' || type === 'scissors') {
-      return moveColors[type as keyof typeof moveColors]
-    }
-    return 'neutral'
+  const getEnemyVariant = (type: MoveType): 'rock' | 'paper' | 'scissors' => {
+    return moveColors[type]
   }
 
   const handleMove = (move: MoveType) => {

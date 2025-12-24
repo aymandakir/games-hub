@@ -1,9 +1,8 @@
 'use client'
 
 import { useState, useEffect, useRef } from 'react'
-import { motion, AnimatePresence } from 'framer-motion'
+import { motion } from 'framer-motion'
 import { DialogueNode, DialogueChoice } from '@/lib/systems/dialogue-advanced'
-import { useGameStore } from '@/lib/store/gameStore'
 import Button from '@/components/ui/Button'
 import { Lock } from 'lucide-react'
 
@@ -18,9 +17,6 @@ export default function DialogueManager({ node, onChoiceSelected, onClose }: Dia
   const [isTyping, setIsTyping] = useState(true)
   const typingSpeed = 30 // ms per character
   const textIndexRef = useRef(0)
-
-  const player = useGameStore(state => state.player)
-  const relationships = useGameStore(state => state.story.npcRelationships)
 
   // Typewriter effect
   useEffect(() => {

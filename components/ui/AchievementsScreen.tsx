@@ -4,18 +4,15 @@ import { useState, useEffect } from 'react'
 import { getAchievementSystem } from '@/lib/systems/achievements'
 import { ACHIEVEMENTS, Achievement } from '@/lib/constants/achievements'
 import Card from './Card'
-import Button from './Button'
 import Modal from './Modal'
 
 export function AchievementsScreen({ isOpen, onClose }: { isOpen: boolean; onClose: () => void }) {
-  const [system, setSystem] = useState(getAchievementSystem())
   const [unlocked, setUnlocked] = useState<Achievement[]>([])
   const [progress, setProgress] = useState({ unlocked: 0, total: 0, percentage: 0 })
 
   useEffect(() => {
     if (isOpen) {
       const sys = getAchievementSystem()
-      setSystem(sys)
       setUnlocked(sys.getUnlockedAchievements())
       setProgress(sys.getProgress())
     }

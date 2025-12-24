@@ -203,7 +203,7 @@ export function endCombat(result: 'victory' | 'defeat'): void {
 }
 
 // Apply move effects (simplified - full implementation would track status effects)
-export function applyMoveEffects(move: Move, targetAlignment: Alignment): {
+export function applyMoveEffects(move: Move, _targetAlignment: Alignment): {
   defense?: number
   speed?: number
   confusion?: number

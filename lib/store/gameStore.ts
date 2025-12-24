@@ -7,15 +7,11 @@ import {
   StoryState,
   UIState,
   Alignment,
-  Enemy,
-  RoundResult,
   MoveType,
-  Location,
-  DialogueNode,
 } from '@/lib/types/game'
 import { CHARACTERS } from '@/lib/constants/characters'
-import { getEnemy, ENEMIES } from '@/lib/constants/enemies'
-import { getLocation, LOCATIONS } from '@/lib/constants/locations'
+import { getEnemy } from '@/lib/constants/enemies'
+import { getLocation } from '@/lib/constants/locations'
 import { getDialogueNode } from '@/lib/constants/dialogue'
 import {
   resolveRound,

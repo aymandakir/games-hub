@@ -2,11 +2,8 @@
 
 import { useEffect } from 'react'
 import { Inter } from 'next/font/google'
-import type { Metadata } from 'next'
 import './globals.css'
 
-// Note: Metadata export doesn't work with 'use client'
-// For SEO, create a separate metadata file or use next/head
 import { getAudioManager } from '@/lib/systems/audio'
 import { getSaveSystem } from '@/lib/systems/save-system'
 import ParticleCanvas from '@/components/effects/ParticleCanvas'
@@ -42,7 +39,7 @@ export default function RootLayout({
     try {
       // Audio
       const audio = getAudioManager()
-      await audio.preloadCriticalSounds()
+      // Audio system initializes automatically, no need to call private method
       console.log('[Init] Audio system ready')
 
       // Save system

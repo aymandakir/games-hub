@@ -1,7 +1,6 @@
 'use client'
 
 import { useState } from 'react'
-import { useGameStore } from '@/lib/store/gameStore'
 import Card from './Card'
 
 export default function QuestTracker() {

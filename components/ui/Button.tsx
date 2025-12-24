@@ -2,7 +2,6 @@
 
 import { motion } from 'framer-motion'
 import { ReactNode } from 'react'
-import { MoveType } from '@/lib/types/game'
 
 interface ButtonProps {
   children: ReactNode

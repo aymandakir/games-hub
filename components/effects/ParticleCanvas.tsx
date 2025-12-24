@@ -8,30 +8,30 @@ export default function ParticleCanvas() {
   const systemRef = useRef<ParticleSystem | null>(null)
 
   useEffect(() => {
-    if (canvasRef.current && !systemRef.current) {
-      // Set canvas size
-      const resizeCanvas = () => {
-        if (canvasRef.current) {
-          canvasRef.current.width = window.innerWidth
-          canvasRef.current.height = window.innerHeight
-        }
+    if (!canvasRef.current || systemRef.current) return
+
+    // Set canvas size
+    const resizeCanvas = () => {
+      if (canvasRef.current) {
+        canvasRef.current.width = window.innerWidth
+        canvasRef.current.height = window.innerHeight
       }
+    }
 
-      resizeCanvas()
-      window.addEventListener('resize', resizeCanvas)
+    resizeCanvas()
+    window.addEventListener('resize', resizeCanvas)
 
-      // Create particle system
-      systemRef.current = new ParticleSystem(canvasRef.current)
+    // Create particle system
+    systemRef.current = new ParticleSystem(canvasRef.current)
 
-      // Expose to window for easy access (dev only)
-      if (typeof window !== 'undefined') {
-        ;(window as any).particleSystem = systemRef.current
-      }
+    // Expose to window for easy access (dev only)
+    if (typeof window !== 'undefined') {
+      ;(window as any).particleSystem = systemRef.current
+    }
 
-      return () => {
-        window.removeEventListener('resize', resizeCanvas)
-        systemRef.current?.destroy()
-      }
+    return () => {
+      window.removeEventListener('resize', resizeCanvas)
+      systemRef.current?.destroy()
     }
   }, [])
 

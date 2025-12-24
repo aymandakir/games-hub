@@ -52,7 +52,7 @@ export function generateCharacterSVG(character: 'kael' | 'lyra'): string {
 }
 
 export function generateEnemySVG(
-  type: string,
+  _type: string,
   faction: 'rock' | 'paper' | 'scissors'
 ): string {
   const colors = {
@@ -112,8 +112,8 @@ export function getEnemySprite(type: string, faction: 'rock' | 'paper' | 'scisso
   return `data:image/svg+xml;base64,${Buffer.from(svg).toString('base64')}`
 }
 
-// Helper to get faction from enemy ID
-function getFactionFromId(id: string): 'rock' | 'paper' | 'scissors' {
+// Helper to get faction from enemy ID (exported for potential use)
+export function getFactionFromId(id: string): 'rock' | 'paper' | 'scissors' {
   if (id.includes('rock') || id.includes('stone') || id.includes('mountain')) return 'rock'
   if (id.includes('paper') || id.includes('wind') || id.includes('scroll')) return 'paper'
   if (id.includes('scissor') || id.includes('blade') || id.includes('cut')) return 'scissors'

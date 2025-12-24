@@ -1,7 +1,6 @@
 'use client'
 
 import { useState, useEffect, useCallback } from 'react'
-import { motion } from 'framer-motion'
 import { useGameStore } from '@/lib/store/gameStore'
 import { getLocation } from '@/lib/constants/locations'
 import { getAudioManager } from '@/lib/systems/audio'
@@ -16,7 +15,7 @@ export default function ExplorationView() {
   const [showMenu, setShowMenu] = useState(false)
   const [showShop, setShowShop] = useState(false)
   const [showDialogue, setShowDialogue] = useState(false)
-  const [currentDialogue, setCurrentDialogue] = useState<any>(null)
+  const [currentDialogue, setCurrentDialogue] = useState<unknown>(null)
 
   const player = useGameStore(state => state.player)
   const travelToLocation = useGameStore(state => state.travelToLocation)
@@ -68,6 +67,13 @@ export default function ExplorationView() {
     scissors: 'scissors',
     neutral: 'neutral',
   } as const
+
+  const buttonVariants = {
+    rock: 'rock' as const,
+    paper: 'paper' as const,
+    scissors: 'scissors' as const,
+    neutral: 'primary' as const,
+  }
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-neutral-bg to-rock-dark p-4 md:p-8">
@@ -165,7 +171,7 @@ export default function ExplorationView() {
               <Button
                 key={point.id}
                 onClick={() => handleInteract(point.id)}
-                variant={regionColors[location.region]}
+                variant={buttonVariants[location.region]}
                 className="w-full text-left justify-start"
               >
                 {point.name} - {point.description}

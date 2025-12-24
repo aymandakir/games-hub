@@ -14,6 +14,7 @@ export default function AutoSaveIndicator() {
       const timer = setTimeout(() => setVisible(false), 2000)
       return () => clearTimeout(timer)
     }
+    return undefined
   }, [lastAutoSave])
 
   return (

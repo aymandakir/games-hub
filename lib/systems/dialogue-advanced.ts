@@ -89,8 +89,7 @@ export function getRelationshipStatus(npcId: string): string {
   return 'trusted'
 }
 
-export function canAccessDialogue(npcId: string, treeId: string): boolean {
-  const state = useGameStore.getState()
+export function canAccessDialogue(_npcId: string, _treeId: string): boolean {
   // Check if dialogue tree requirements are met
   // This would check flags, alignment, relationships
   return true // Simplified for now
@@ -98,7 +97,6 @@ export function canAccessDialogue(npcId: string, treeId: string): boolean {
 
 // Dialogue evaluation
 export function evaluateDialogueNode(node: DialogueNode): DialogueNode {
-  const state = useGameStore.getState()
   const evaluatedNode = { ...node }
   
   // Evaluate choices
@@ -168,7 +166,7 @@ function checkChoiceRequirements(
 
 function getLockReason(
   choice: DialogueChoice,
-  state: ReturnType<typeof useGameStore.getState>
+  _state: ReturnType<typeof useGameStore.getState>
 ): string {
   if (!choice.requirements) return ''
   
@@ -191,7 +189,7 @@ function getLockReason(
 }
 
 // Get dialogue node (would load from constants)
-function getDialogueNode(nodeId: string): DialogueNode | null {
+function getDialogueNode(_nodeId: string): DialogueNode | null {
   // This would fetch from dialogue constants
   return null
 }
