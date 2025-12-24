@@ -188,8 +188,20 @@ function generateLocalLore(): string {
 
 /**
  * Batch fetch content for game initialization
+ * @deprecated Use fetchFantasyContentBatch instead
  */
 export async function fetchGameContentBatch(): Promise<{
+  names: string[]
+  lore: string[]
+  monsters: any[]
+}> {
+  return fetchFantasyContentBatch()
+}
+
+/**
+ * Batch fetch content for game initialization
+ */
+export async function fetchFantasyContentBatch(): Promise<{
   names: string[]
   lore: string[]
   monsters: any[]
