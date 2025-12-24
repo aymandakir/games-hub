@@ -5,7 +5,7 @@
 
 import { Quest, Item } from '@/lib/types/game'
 import { generateDailyChallenge, generateRandomEvent } from './encounters'
-import { fetchFantasyContentBatch } from './digital-library'
+import { fetchGameContentBatch } from './digital-library'
 
 export interface DailyChallenge {
   quest: Quest
@@ -315,7 +315,7 @@ export async function generateSeasonalEvent(): Promise<Quest | null> {
 export async function initializeMetaGame(): Promise<MetaGameState> {
   // Try to fetch content for enhanced experience
   try {
-    await fetchFantasyContentBatch()
+    await fetchGameContentBatch()
   } catch (error) {
     console.warn('Failed to fetch initial content batch:', error)
   }
