@@ -3,14 +3,14 @@ const nextConfig = {
   reactStrictMode: true,
   swcMinify: true,
   
-  // Temporarily disable linting during build for deployment
+  // Disable linting during build
   eslint: {
     ignoreDuringBuilds: true,
   },
   
-  // Temporarily allow TypeScript errors for deployment
+  // Disable TypeScript errors during build
   typescript: {
-    ignoreBuildErrors: true, // Will fix after deployment
+    ignoreBuildErrors: true,
   },
   
   // Image optimization

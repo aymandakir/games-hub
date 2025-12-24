@@ -48,9 +48,15 @@ export class AudioManager {
   }
 
   private async preloadCriticalSounds(): Promise<void> {
-    // Skip preloading if files don't exist - run in silent mode
-    console.log('[Audio] Skipping audio preload - files not present, running in silent mode')
-    return Promise.resolve()
+    // Preload critical UI sounds
+    const criticalSounds = ['button_click', 'button_hover', 'menu_open']
+    for (const soundId of criticalSounds) {
+      try {
+        await this.preloadSound(soundId, `/audio/sfx/${soundId}.wav`)
+      } catch (error) {
+        // Silently fail for missing files
+      }
+    }
   }
 
   async preloadSound(url: string, id: string): Promise<void> {
@@ -58,23 +64,16 @@ export class AudioManager {
 
     try {
       const response = await fetch(url)
-      if (!response.ok) {
-        console.warn(`[Audio] File not found: ${url} - Running in silent mode`)
-        return
-      }
       const arrayBuffer = await response.arrayBuffer()
       const audioBuffer = await this.audioContext.decodeAudioData(arrayBuffer)
       this.loadedSounds.set(id, audioBuffer)
     } catch (error) {
-      console.warn(`[Audio] Failed to load ${id}, continuing without audio:`, error)
+      console.warn(`Failed to load sound ${id}:`, error)
     }
   }
 
   async playMusic(trackId: string, fadeIn = true): Promise<void> {
-    if (!this.audioContext || !this.musicVolume) {
-      console.log(`[Audio] Would play music: ${trackId} (silent mode)`)
-      return
-    }
+    if (!this.audioContext || !this.musicVolume) return
 
     // Stop current music
     this.stopMusic(false)
@@ -83,10 +82,6 @@ export class AudioManager {
 
     try {
       const response = await fetch(url)
-      if (!response.ok) {
-        console.log(`[Audio] Music file not found: ${trackId} - Running in silent mode`)
-        return
-      }
       const arrayBuffer = await response.arrayBuffer()
       const audioBuffer = await this.audioContext.decodeAudioData(arrayBuffer)
 
@@ -106,7 +101,7 @@ export class AudioManager {
       source.start(0)
       this.currentMusic = source
     } catch (error) {
-      console.warn(`[Audio] Failed to play music ${trackId}, continuing silently:`, error)
+      console.warn(`Failed to play music ${trackId}:`, error)
     }
   }
 
@@ -136,10 +131,7 @@ export class AudioManager {
   }
 
   async playSFX(soundId: string, volume = 1.0, pitch = 1.0): Promise<void> {
-    if (!this.audioContext || !this.sfxVolume) {
-      console.log(`[Audio] Would play SFX: ${soundId} (silent mode)`)
-      return
-    }
+    if (!this.audioContext || !this.sfxVolume) return
 
     const url = this.sfxLibrary.get(soundId) || `/audio/sfx/${soundId}.wav`
 
@@ -148,10 +140,6 @@ export class AudioManager {
 
       if (!audioBuffer) {
         const response = await fetch(url)
-        if (!response.ok) {
-          console.log(`[Audio] SFX file not found: ${soundId} - Running in silent mode`)
-          return
-        }
         const arrayBuffer = await response.arrayBuffer()
         audioBuffer = await this.audioContext.decodeAudioData(arrayBuffer)
         this.loadedSounds.set(soundId, audioBuffer)
@@ -168,7 +156,7 @@ export class AudioManager {
       gainNode.connect(this.sfxVolume)
       source.start(0)
     } catch (error) {
-      console.log(`[Audio] Failed to play SFX ${soundId}, continuing silently`)
+      // Silently fail for missing files
     }
   }
 
