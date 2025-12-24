@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useCallback } from 'react'
 import { motion } from 'framer-motion'
 import { useGameStore } from '@/lib/store/gameStore'
 import { getLocation } from '@/lib/constants/locations'
@@ -22,26 +22,31 @@ export default function ExplorationView() {
   const travelToLocation = useGameStore(state => state.travelToLocation)
   const interactWithPoint = useGameStore(state => state.interactWithPoint)
   const startBattle = useGameStore(state => state.startBattle)
-  const audio = getAudioManager()
 
   const location = getLocation(player.currentLocation)
+  
+  // Play location music - hook at top level, condition inside
+  useEffect(() => {
+    if (location) {
+      const audio = getAudioManager()
+      const regionMusic: Record<string, string> = {
+        rock: 'rock_dominion',
+        paper: 'paper_dominion',
+        scissors: 'scissor_dominion',
+        neutral: 'crosspoint_theme',
+      }
+      audio.playMusic(regionMusic[location.region] || 'crosspoint_theme', true)
+    }
+  }, [location?.region])
+
   if (!location) return null
 
-  // Play location music
-  useEffect(() => {
-    const regionMusic: Record<string, string> = {
-      rock: 'rock_dominion',
-      paper: 'paper_dominion',
-      scissors: 'scissor_dominion',
-      neutral: 'crosspoint_theme',
-    }
-    audio.playMusic(regionMusic[location.region] || 'crosspoint_theme', true)
-  }, [location.region])
-
-  const handleInteract = (pointId: string) => {
+  const handleInteract = useCallback((pointId: string) => {
+    if (!location) return
     const point = location.interactivePoints.find(p => p.id === pointId)
     if (!point) return
 
+    const audio = getAudioManager()
     audio.playSFX('button_click')
 
     if (point.type === 'shop') {
@@ -55,7 +60,7 @@ export default function ExplorationView() {
     } else {
       interactWithPoint(pointId)
     }
-  }
+  }, [location, interactWithPoint, startBattle, setShowShop, setShowDialogue])
 
   const regionColors = {
     rock: 'rock',

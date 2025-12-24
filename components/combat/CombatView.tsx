@@ -16,7 +16,7 @@ const moveIcons = {
   scissors: Scissors,
 }
 
-const moveColors = {
+const moveColors: Record<'rock' | 'paper' | 'scissors', 'rock' | 'paper' | 'scissors'> = {
   rock: 'rock',
   paper: 'paper',
   scissors: 'scissors',
@@ -33,7 +33,9 @@ export default function CombatView() {
   useEffect(() => {
     if (combat.isActive && combat.enemy) {
       initializeCombat(combat.enemy)
-      particleSystemRef.current = (window as any).particleSystem
+      if (typeof window !== 'undefined') {
+        particleSystemRef.current = (window as any).particleSystem
+      }
     }
   }, [combat.isActive, combat.enemy])
 
@@ -49,6 +51,14 @@ export default function CombatView() {
   }
 
   const audio = getAudioManager()
+  
+  // Get variant for enemy type
+  const getEnemyVariant = (type: string): 'rock' | 'paper' | 'scissors' | 'neutral' => {
+    if (type === 'rock' || type === 'paper' || type === 'scissors') {
+      return moveColors[type as keyof typeof moveColors]
+    }
+    return 'neutral'
+  }
 
   const handleMove = (move: MoveType) => {
     if (combat.status === 'waiting') {
@@ -100,7 +110,7 @@ export default function CombatView() {
           <ProgressBar
             current={combat.enemyHP}
             max={combat.enemyMaxHP}
-            variant={moveColors[combat.enemy.type]}
+            variant={getEnemyVariant(combat.enemy.type)}
             label="Enemy HP"
           />
         </motion.div>
@@ -156,7 +166,7 @@ export default function CombatView() {
                 >
                   <Button
                     onClick={() => handleMove(move)}
-                    variant={moveColors[move]}
+                    variant={moveColors[move] as 'rock' | 'paper' | 'scissors'}
                     size="lg"
                     disabled={!isWaiting}
                     className={`

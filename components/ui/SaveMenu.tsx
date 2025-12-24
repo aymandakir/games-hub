@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useCallback } from 'react'
 import { useGameStore } from '@/lib/store/gameStore'
 import { SaveMetadata } from '@/lib/systems/save-system'
 import Card from './Card'
@@ -16,14 +16,15 @@ export default function SaveMenu({ onClose }: SaveMenuProps) {
   const saveGame = useGameStore(state => state.saveGame)
   const getAllSaves = useGameStore(state => state.getAllSaves)
 
-  useEffect(() => {
-    loadSaves()
-  }, [])
-
-  const loadSaves = async () => {
+  // Use useCallback to stabilize function reference
+  const loadSaves = useCallback(async () => {
     const allSaves = await getAllSaves()
     setSaves(allSaves)
-  }
+  }, [getAllSaves])
+
+  useEffect(() => {
+    loadSaves()
+  }, [loadSaves])
 
   const handleSave = async (slotId: string) => {
     await saveGame(slotId)
