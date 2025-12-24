@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 # Dependencies
 node_modules/
 /.pnp
@@ -33,3 +34,25 @@ yarn-error.log*
 *.tsbuildinfo
 next-env.d.ts
 
+=======
+# OS files
+.DS_Store
+Thumbs.db
+
+# Editor files
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# Logs
+*.log
+npm-debug.log*
+
+# Environment variables
+.env
+.env.local
+
+.vercel
+>>>>>>> e0572a7d5de9d436b67922c3027e2386ac43f1df

@@ -9,6 +9,7 @@ import ProgressBar from '@/components/ui/ProgressBar'
 
 export default function CharacterSelect() {
   const selectCharacter = useGameStore(state => state.selectCharacter)
+  const setScreen = useGameStore(state => state.setScreen)
 
   const kael = CHARACTERS.kael
   const lyra = CHARACTERS.lyra
@@ -86,7 +87,11 @@ export default function CharacterSelect() {
                 </div>
 
                 <Button
-                  onClick={() => selectCharacter('kael')}
+                  onClick={() => {
+                    console.log('[CharacterSelect] Selected Kael')
+                    selectCharacter('kael')
+                    setScreen('exploration')
+                  }}
                   variant="paper"
                   size="lg"
                   className="w-full"
@@ -154,7 +159,11 @@ export default function CharacterSelect() {
                 </div>
 
                 <Button
-                  onClick={() => selectCharacter('lyra')}
+                  onClick={() => {
+                    console.log('[CharacterSelect] Selected Lyra')
+                    selectCharacter('lyra')
+                    setScreen('exploration')
+                  }}
                   variant="scissors"
                   size="lg"
                   className="w-full"
