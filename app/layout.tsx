@@ -14,7 +14,7 @@ import { useAutoSave } from '@/lib/hooks/useAutoSave'
 import { useKeyboardShortcuts } from '@/lib/hooks/useKeyboardShortcuts'
 import QuestTracker from '@/components/ui/QuestTracker'
 import AutoSaveIndicator from '@/components/ui/AutoSaveIndicator'
-import AchievementNotification from '@/components/ui/AchievementNotification'
+import { AchievementNotification } from '@/components/ui/AchievementNotification'
 
 const inter = Inter({ subsets: ['latin'] })
 
