@@ -1,0 +1,1 @@
+EVERY REQUEST MUST: (1) Fully generate working code, (2) Improve A-Z (features, bugs, UX), (3) Add more games, (4) Enhance home page with grouping, (5) Make everything 100% better. Generate complete implementation with files, docs, and next steps. START: [YOUR REQUEST]

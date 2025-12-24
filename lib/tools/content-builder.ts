@@ -3,7 +3,7 @@
  * Use these in your story constant files
  */
 
-import { Location, Quest, Enemy, DialogueTree, DialogueNode } from '@/lib/types/game'
+import { Location, Quest, Enemy, DialogueNode } from '@/lib/types/game'
 
 export function createLocation(data: Partial<Location>): Location {
   return {
@@ -24,11 +24,11 @@ export function createQuest(data: Partial<Quest>): Quest {
     id: data.id || '',
     name: data.name || 'Untitled Quest',
     description: data.description || '',
-    type: data.type || 'side',
-    act: data.act || 1,
+    act: (data.act || 1) as 1 | 2 | 3,
     region: data.region || 'neutral',
     objectives: data.objectives || [],
     rewards: data.rewards || {},
+    status: data.status || 'locked',
     ...data,
   }
 }
@@ -47,12 +47,15 @@ export function createEnemy(data: Partial<Enemy>): Enemy {
   }
 }
 
-export function createDialogue(data: Partial<DialogueTree>): DialogueTree {
+export function createDialogue(data: Partial<{ id: string; npcId: string; root: DialogueNode }>): {
+  id: string
+  npcId: string
+  root: DialogueNode
+} {
   return {
     id: data.id || '',
-    npc: data.npc || 'unknown',
+    npcId: data.npcId || 'unknown',
     root: data.root || createDialogueNode({ text: 'Hello.' }),
-    context: data.context || {},
   }
 }
 

@@ -13,3 +13,5 @@ export function Card({ children, className = '' }: CardProps) {
   )
 }
 
+// Default export for compatibility
+export default Card

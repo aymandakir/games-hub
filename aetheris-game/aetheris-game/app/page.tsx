@@ -25,10 +25,19 @@ export default function HomePage() {
           <Button
             onClick={() => setScreen('character_select')}
             variant="primary"
-            className="w-full text-xl py-6 hover:scale-105 transform"
+            className="w-full text-xl py-6 hover:scale-105 transform transition-all animate-pulse hover:animate-none"
           >
             ⚔️ Begin Adventure
           </Button>
+        </div>
+        
+        <div className="mt-8 text-center">
+          <a 
+            href="../" 
+            className="text-gray-400 hover:text-white transition-colors text-sm"
+          >
+            ← Back to Game Hub
+          </a>
         </div>
 
         <p className="text-sm text-gray-500 mt-8">Choose your character and restore balance to Aetheris</p>

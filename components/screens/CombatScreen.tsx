@@ -20,22 +20,32 @@ export default function CombatScreen() {
     { id: 'scissors', name: 'Scissors', icon: '✂️', color: 'purple' },
   ]
 
-  const handleMove = (move: 'rock' | 'paper' | 'scissors') => {
+  const handleMove = async (move: 'rock' | 'paper' | 'scissors') => {
+    if (combat.status !== 'waiting') return
+    
     // Player attack animation
     setPlayerAnimation('attack')
     setEnemyAnimation('idle')
     setShowResult(false)
     
-    setTimeout(() => {
-      playerMove(move)
+    setTimeout(async () => {
+      await makeMove(move)
       
       // Enemy hit animation
       setEnemyAnimation('hit')
       
       // Show result after a delay
       setTimeout(() => {
-        const latestLog = battleLog[battleLog.length - 1] || ''
-        setLastResult(latestLog)
+        const latestRound = combat.roundHistory[combat.roundHistory.length - 1]
+        if (latestRound) {
+          if (latestRound.winner === 'player') {
+            setLastResult(`You win! ${latestRound.playerMove} beats ${latestRound.enemyMove}`)
+          } else if (latestRound.winner === 'enemy') {
+            setLastResult(`Enemy wins! ${latestRound.enemyMove} beats ${latestRound.playerMove}`)
+          } else {
+            setLastResult(`Tie! Both used ${latestRound.playerMove}`)
+          }
+        }
         setShowResult(true)
         
         // Reset animations
@@ -60,20 +70,23 @@ export default function CombatScreen() {
           }`}>
             {currentEnemy.type === 'rock' ? '🗿' : currentEnemy.type === 'paper' ? '📜' : '✂️'}
           </div>
-          <h3 className="text-3xl font-bold mb-4">{currentEnemy.name}</h3>
+          <h3 className="text-3xl font-bold mb-4">{enemy.name}</h3>
           <div className="max-w-md mx-auto">
             <div className="w-full bg-gray-700 rounded-full h-4 mb-2 relative overflow-hidden">
               <div
                 className="bg-red-500 h-4 rounded-full transition-all duration-500"
-                style={{ width: `${(currentEnemy.hp / currentEnemy.maxHP) * 100}%` }}
+                style={{ width: `${(combat.enemyHP / combat.enemyMaxHP) * 100}%` }}
               />
               {enemyAnimation === 'hit' && (
                 <div className="absolute inset-0 bg-white animate-ping opacity-50" />
               )}
             </div>
             <p className="text-lg">
-              {currentEnemy.hp} / {currentEnemy.maxHP} HP
+              {combat.enemyHP} / {combat.enemyMaxHP} HP
             </p>
+            {enemy.isBoss && (
+              <p className="text-sm text-red-400 font-bold mt-2">⚠️ BOSS</p>
+            )}
           </div>
         </Card>
 
@@ -123,14 +136,17 @@ export default function CombatScreen() {
                   {player.character === 'kael' ? 'Kael' : 'Lyra'}
                 </h3>
                 <p className="text-gray-400">
-                  Your HP: {player.hp} / {player.maxHP}
+                  HP: {combat.playerHP} / {combat.playerMaxHP}
+                </p>
+                <p className="text-gray-400 text-sm">
+                  Resolve: {combat.playerResolve} / {combat.maxResolve}
                 </p>
               </div>
             </div>
             <div className="w-64 bg-gray-700 rounded-full h-4 relative overflow-hidden">
               <div
                 className="bg-green-500 h-4 rounded-full transition-all duration-500"
-                style={{ width: `${(player.hp / player.maxHP) * 100}%` }}
+                style={{ width: `${(combat.playerHP / combat.playerMaxHP) * 100}%` }}
               />
               {playerAnimation === 'hit' && (
                 <div className="absolute inset-0 bg-white animate-ping opacity-50" />
@@ -139,6 +155,19 @@ export default function CombatScreen() {
           </div>
         </Card>
 
+        {/* Symbol Break Button */}
+        {combat.canUseSymbolBreak && (
+          <Card className="p-4 mb-4 bg-gradient-to-r from-purple-600/20 to-pink-600/20 border-purple-500">
+            <Button
+              onClick={() => useSymbolBreak()}
+              variant="primary"
+              className="w-full py-4 bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 text-xl font-bold"
+            >
+              ⚡ SYMBOL BREAK ⚡
+            </Button>
+          </Card>
+        )}
+
         {/* Move Selection */}
         <div className="grid grid-cols-3 gap-4">
           {moves.map(move => (
@@ -146,7 +175,8 @@ export default function CombatScreen() {
               key={move.id}
               onClick={() => handleMove(move.id as 'rock' | 'paper' | 'scissors')}
               variant="primary"
-              className="py-12 hover:scale-110 transform transition-all active:scale-95"
+              disabled={combat.status !== 'waiting'}
+              className="py-12 hover:scale-110 transform transition-all active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed"
             >
               <div className="relative">
                 <div className={`text-6xl mb-3 transition-transform ${

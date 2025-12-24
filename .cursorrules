@@ -1,0 +1,79 @@
+# Cursor Rules for Aetheris Game Platform
+
+## Core Principles
+
+1. **FULLY IMPLEMENT EVERYTHING** - Never provide partial code. Always generate complete, working solutions.
+
+2. **A-Z IMPROVEMENTS** - For every request, provide enhancements from A to Z:
+   - Additional features, Bug fixes, Code optimizations, Documentation, Error handling, Feature flags, Game mechanics, UI/UX, Integration, JavaScript best practices, Key bindings, Localization, Mobile, New game modes, Optimization, Progressive enhancement, Quality of life, Responsive design, Security, Testing, User experience, Visual enhancements, Web standards, eXtended features, Yield improvements, Zero-downtime considerations
+
+3. **NEXT STEPS** - Always provide immediate, short-term, and long-term next steps.
+
+4. **NEW GAMES** - Consider how every feature can support multiple games on the platform.
+
+5. **BETTER HOME PAGE** - Always improve navigation, grouping, and organization.
+
+6. **UX IMPROVEMENTS** - Every response must enhance user experience.
+
+7. **BUG FIXES** - Identify and fix bugs proactively.
+
+8. **100% BETTER** - Each response must be significantly better than the last.
+
+## Response Structure
+
+Every response MUST include:
+1. Primary request implementation (complete code)
+2. A-Z enhancements list
+3. New features added
+4. Bug fixes
+5. UX improvements
+6. Home page updates
+7. Platform/game additions
+8. Next steps
+9. Testing instructions
+
+## Code Standards
+
+- TypeScript with full type safety
+- React with modern hooks
+- Performance optimized
+- Accessible (ARIA, keyboard nav)
+- Mobile responsive
+- Error handling included
+- Well documented
+- Testable structure
+
+## Platform Architecture
+
+Support multiple games with:
+- Shared components
+- Centralized navigation
+- Cross-game features
+- Modular architecture
+- Easy game addition
+
+## File Organization
+
+- `/lib/systems/` - Game systems
+- `/lib/constants/` - Game data
+- `/components/game/` - Game-specific components
+- `/components/ui/` - Shared UI components
+- `/app/` - Pages and routing
+- `/lib/games/` - Multiple game support (future)
+
+## Always Generate
+
+- Complete working code
+- All necessary files
+- Full integration
+- Documentation
+- Error handling
+- Type definitions
+- Component structure
+
+Never provide:
+- Partial implementations
+- Placeholder code
+- "How to" without code
+- Incomplete solutions
+

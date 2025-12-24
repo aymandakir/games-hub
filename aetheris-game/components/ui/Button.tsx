@@ -20,3 +20,5 @@ export function Button({ variant = 'primary', children, className = '', ...props
   )
 }
 
+// Default export for compatibility
+export default Button

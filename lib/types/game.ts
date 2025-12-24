@@ -2,7 +2,7 @@
 
 export type CharacterId = 'kael' | 'lyra'
 export type MoveType = 'rock' | 'paper' | 'scissors'
-export type GameScreen = 'title' | 'character-select' | 'intro' | 'exploration' | 'combat' | 'dialogue' | 'victory' | 'defeat' | 'ending'
+export type GameScreen = 'title' | 'character-select' | 'intro' | 'exploration' | 'combat' | 'dialogue' | 'victory' | 'defeat' | 'ending' | 'random-mode' | 'endless-mode' | 'inventory' | 'shop'
 export type ActNumber = 1 | 2 | 3
 
 // Alignment percentages (must sum to 100)

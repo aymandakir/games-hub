@@ -20,7 +20,45 @@ import {
   canUseSymbolBreak,
   calculateResolveGain,
 } from '@/lib/systems/combat'
+import type { Item, Enemy, Quest, Location } from '@/lib/types/game'
+
+// Type definitions for save system
+type SaveMetadata = {
+  slotId: string
+  timestamp: number
+  playtime: number
+  location: string
+  level: number
+}
+
 import { getSaveSystem, SaveMetadata } from '@/lib/systems/save-system'
+
+const generateEnemy = (_region?: MoveType | 'neutral', _isBoss?: boolean): Enemy | null => {
+  // Stub - would generate random enemy
+  return null
+}
+
+const generateQuest = (_region?: MoveType | 'neutral'): Quest | null => {
+  // Stub - would generate random quest
+  return null
+}
+
+const generateLocation = (): Location | null => {
+  // Stub - would generate random location
+  return null
+}
+
+const generateWildernessEncounter = async (_region: string, _level: number) => {
+  // Stub - would generate encounter
+}
+
+const generateDailyChallenge = async (_level: number) => {
+  // Stub - would generate daily challenge
+}
+
+const generateRandomEvent = async () => {
+  // Stub - would generate random event
+}
 
 interface GameStore {
   // State slices
@@ -31,7 +69,7 @@ interface GameStore {
 
   // Actions
   selectCharacter: (character: CharacterId) => void
-  startBattle: (enemyId: string) => void
+  startBattle: (enemyId: string | Enemy) => void
   makeMove: (move: MoveType) => void
   resolveCombatRound: () => void
   endBattle: (result: 'victory' | 'defeat') => void
@@ -55,6 +93,14 @@ interface GameStore {
   autoSaveEnabled: boolean
   setAutoSaveEnabled: (enabled: boolean) => void
   playtime: number
+
+  // Random Generation actions
+  generateRandomEnemy: (region?: MoveType | 'neutral', isBoss?: boolean) => Promise<Enemy>
+  generateRandomQuest: (region?: MoveType | 'neutral') => Promise<Quest>
+  generateRandomEncounter: () => Promise<void>
+  generateDailyChallenge: () => Promise<void>
+  triggerRandomEvent: () => Promise<void>
+  addGeneratedLocation: (location: Location) => void
 }
 
 const initialPlayerState: PlayerState = {
@@ -108,7 +154,13 @@ const initialUIState: UIState = {
 
 // Helper function to show notifications
 function showNotification(message: string, type: 'success' | 'error' | 'info' = 'info'): void {
-  // Create notification element
+  // Try to use the notification system if available
+  if (typeof window !== 'undefined' && (window as any).showNotification) {
+    (window as any).showNotification(message, type)
+    return
+  }
+  
+  // Fallback to DOM-based notification
   const notification = document.createElement('div')
   notification.className = `fixed top-4 right-4 px-4 py-2 rounded shadow-lg z-50 ${
     type === 'success' ? 'bg-green-600' : type === 'error' ? 'bg-red-600' : 'bg-blue-600'
@@ -131,6 +183,10 @@ export const useGameStore = create<GameStore>((set, get) => ({
   // Character selection
   selectCharacter: (character: CharacterId) => {
     const char = CHARACTERS[character]
+    if (!char) {
+      console.error(`Character ${character} not found`)
+      return
+    }
     set({
       player: {
         ...initialPlayerState,
@@ -147,8 +203,16 @@ export const useGameStore = create<GameStore>((set, get) => ({
   },
 
   // Combat actions
-  startBattle: (enemyId: string) => {
-    const enemy = getEnemy(enemyId)
+  startBattle: (enemyId: string | Enemy) => {
+    let enemy: Enemy | null = null
+    
+    // Support both string IDs and Enemy objects (for procedural enemies)
+    if (typeof enemyId === 'string') {
+      enemy = getEnemy(enemyId)
+    } else {
+      enemy = enemyId
+    }
+    
     if (!enemy) return
 
     const player = get().player
@@ -171,12 +235,16 @@ export const useGameStore = create<GameStore>((set, get) => ({
     })
   },
 
-  makeMove: (move: MoveType) => {
+  makeMove: async (move: MoveType) => {
     const state = get()
     if (!state.combat.isActive || state.combat.status !== 'waiting') return
 
     const enemy = state.combat.enemy
     if (!enemy) return
+
+    // Dynamically load combat functions
+    const combatFuncs = await import('@/lib/systems/combat')
+    const { getEnemyMove, resolveRound, checkBattleEnd, canUseSymbolBreak, calculateResolveGain } = combatFuncs
 
     // Get enemy move
     const enemyMove = getEnemyMove(enemy, state.combat.roundHistory, enemy.currentHP)
@@ -192,7 +260,7 @@ export const useGameStore = create<GameStore>((set, get) => ({
     // Update enemy HP
     enemy.currentHP = newEnemyHP
 
-    // Calculate resolve gain
+    // Calculate resolve gain (using function from dynamic import)
     const resolveGain = calculateResolveGain(roundResult)
     const newResolve = Math.min(100, state.combat.playerResolve + resolveGain)
 
@@ -291,6 +359,7 @@ export const useGameStore = create<GameStore>((set, get) => ({
     if (!state.combat.canUseSymbolBreak || !state.player.character) return
 
     const character = CHARACTERS[state.player.character]
+    if (!character) return
     const symbolBreak = character.symbolBreak
 
     // Apply Symbol Break damage
@@ -313,8 +382,9 @@ export const useGameStore = create<GameStore>((set, get) => ({
     })
 
     // Check if battle ends
-    setTimeout(() => {
-      const battleResult = checkBattleEnd(state.combat.playerHP, newEnemyHP)
+    setTimeout(async () => {
+      const combatFuncs = await import('@/lib/systems/combat')
+      const battleResult = combatFuncs.checkBattleEnd(state.combat.playerHP, newEnemyHP)
       if (battleResult !== 'ongoing') {
         get().endBattle(battleResult)
       } else {
@@ -486,6 +556,7 @@ export const useGameStore = create<GameStore>((set, get) => ({
   autoSaveEnabled: true,
 
   saveGame: async (slotId: string) => {
+    const { getSaveSystem } = await import('@/lib/systems/save-system')
     const saveSystem = await getSaveSystem()
     const currentState = get()
 
@@ -511,6 +582,7 @@ export const useGameStore = create<GameStore>((set, get) => ({
   },
 
   loadGame: async (slotId: string) => {
+    const { getSaveSystem } = await import('@/lib/systems/save-system')
     const saveSystem = await getSaveSystem()
     const saveData = await saveSystem.loadGame(slotId)
 
@@ -534,11 +606,13 @@ export const useGameStore = create<GameStore>((set, get) => ({
   },
 
   getAllSaves: async () => {
+    const { getSaveSystem } = await import('@/lib/systems/save-system')
     const saveSystem = await getSaveSystem()
     return await saveSystem.getAllSaves()
   },
 
   deleteSave: async (slotId: string) => {
+    const { getSaveSystem } = await import('@/lib/systems/save-system')
     const saveSystem = await getSaveSystem()
     await saveSystem.deleteSave(slotId)
     showNotification('Save deleted', 'info')
@@ -546,6 +620,64 @@ export const useGameStore = create<GameStore>((set, get) => ({
 
   setAutoSaveEnabled: (enabled: boolean) => {
     set({ autoSaveEnabled: enabled })
+  },
+
+  // Random Generation actions
+  generateRandomEnemy: async (region?: MoveType | 'neutral', isBoss?: boolean): Promise<Enemy> => {
+    const _state = get()
+    const _enemyRegion = region || 'neutral'
+    // Stub implementation - would generate procedural enemy
+    return generateEnemy(region, isBoss) || {
+      id: 'random_enemy',
+      name: 'Random Enemy',
+      type: 'rock' as MoveType,
+      maxHP: 50,
+      currentHP: 50,
+      pattern: { type: 'random' },
+      description: 'A procedurally generated enemy',
+      isBoss: isBoss || false,
+    } as Enemy
+  },
+  
+  generateRandomQuest: async (region?: MoveType | 'neutral'): Promise<Quest> => {
+    const _state = get()
+    // Stub implementation
+    return generateQuest(region) || {
+      id: 'random_quest',
+      name: 'Random Quest',
+      description: 'A procedurally generated quest',
+      objectives: [],
+      rewards: {},
+      act: 1 as const,
+      region: region || 'neutral',
+    } as Quest
+  },
+  
+  generateRandomEncounter: async () => {
+    const state = get()
+    const location = getLocation(state.player.currentLocation)
+    if (!location) return
+    await generateWildernessEncounter(location.region, state.player.level)
+  },
+  
+  triggerRandomEvent: async () => {
+    await generateRandomEvent()
+  },
+  
+  addGeneratedLocation: (location: Location) => {
+    // Stub - would add to unlocked locations
+    const state = get()
+    set({
+      story: {
+        ...state.story,
+        unlockedLocations: [...state.story.unlockedLocations, location.id],
+      },
+    })
+  },
+  
+  generateDailyChallenge: async () => {
+    const state = get()
+    await generateDailyChallenge(state.player.level)
   },
 }))
 

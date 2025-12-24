@@ -2,6 +2,7 @@
 
 import { motion } from 'framer-motion'
 import { useRouter } from 'next/navigation'
+import { useGameStore } from '@/lib/store/gameStore'
 import Button from '@/components/ui/Button'
 
 export default function TitleScreen() {
@@ -38,7 +39,12 @@ export default function TitleScreen() {
           className="pt-8"
         >
           <Button
-            onClick={() => router.push('/game')}
+            onClick={() => {
+              console.log('[Title] Starting new game...')
+              const { setScreen } = useGameStore.getState()
+              setScreen('character-select')
+              router.push('/game')
+            }}
             variant="primary"
             size="lg"
             className="text-xl px-12 py-6"

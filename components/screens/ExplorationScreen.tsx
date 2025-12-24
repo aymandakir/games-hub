@@ -4,6 +4,10 @@ import { useState, useEffect } from 'react'
 import { useGameStore } from '@/lib/store/gameStore'
 import { Button } from '@/components/ui/Button'
 import { Card } from '@/components/ui/Card'
+import { getLocation } from '@/lib/constants/locations'
+import { generateEnemy } from '@/lib/systems/random-generation'
+import MetaGamePanel from '@/components/ui/MetaGamePanel'
+import QuestTracker from '@/components/ui/QuestTracker'
 
 interface Location {
   id: string
@@ -22,17 +26,55 @@ const locations: Location[] = [
 ]
 
 export default function ExplorationScreen() {
-  const { player, startBattle } = useGameStore()
+  const { 
+    player, 
+    startBattle, 
+    travelToLocation, 
+    generateRandomEncounter,
+    generateRandomEnemy,
+    player: playerState,
+  } = useGameStore()
   const [currentLocation, setCurrentLocation] = useState('crosspoint')
   const [characterPosition, setCharacterPosition] = useState({ x: 50, y: 50 })
   const [isMoving, setIsMoving] = useState(false)
   const [selectedLocation, setSelectedLocation] = useState<Location | null>(null)
+  const [encounterAvailable, setEncounterAvailable] = useState(false)
 
-  const enemies = [
-    { name: 'Rock Guardian', hp: 80, maxHP: 80, type: 'rock' as const, icon: '🗿' },
-    { name: 'Paper Scholar', hp: 60, maxHP: 60, type: 'paper' as const, icon: '📜' },
-    { name: 'Scissor Blade', hp: 70, maxHP: 70, type: 'scissors' as const, icon: '✂️' },
-  ]
+  // Generate dynamic enemies based on location
+  const [enemies, setEnemies] = useState<any[]>([])
+
+  useEffect(() => {
+    const loadEnemies = async () => {
+      const location = getLocation(currentLocation)
+      if (!location) {
+        setEnemies([])
+        return
+      }
+      
+      const regionMap: Record<string, 'rock' | 'paper' | 'scissors'> = {
+        'rock_dominion': 'rock',
+        'granitehold': 'rock',
+        'paper_dominion': 'paper',
+        'scriptoria': 'paper',
+        'scissor_dominion': 'scissors',
+        'edgehaven': 'scissors',
+      }
+      
+      const region = regionMap[location.id] || 'rock'
+      
+      // Generate 3 random enemies for this location
+      const enemyPromises = [
+        generateRandomEnemy(region, false),
+        generateRandomEnemy(region, false),
+        generateRandomEnemy(region, Math.random() > 0.8), // 20% boss chance
+      ]
+      
+      const generatedEnemies = await Promise.all(enemyPromises)
+      setEnemies(generatedEnemies)
+    }
+
+    loadEnemies()
+  }, [currentLocation, generateRandomEnemy])
 
   const handleLocationClick = (location: Location) => {
     if (isMoving) return
@@ -69,10 +111,34 @@ export default function ExplorationScreen() {
         setIsMoving(false)
         setCurrentLocation(location.id)
         setSelectedLocation(null)
+        
+        // Travel to location in store
+        travelToLocation(location.id)
+        
+        // Trigger random encounter based on location encounter chance
+        const gameLocation = getLocation(location.id)
+        if (gameLocation && Math.random() < (gameLocation.encounterChance || 0.3)) {
+          // Delay encounter slightly for better UX
+          setTimeout(async () => {
+            await generateRandomEncounter()
+            setEncounterAvailable(true)
+          }, 500)
+        }
       }
     }
     
     requestAnimationFrame(animate)
+  }
+
+  const handleBattleEnemy = (enemy: any) => {
+    if (enemy) {
+      startBattle(enemy)
+    }
+  }
+
+  const handleRandomEncounter = async () => {
+    setEncounterAvailable(false)
+    await generateRandomEncounter()
   }
 
   const currentLoc = locations.find(l => l.id === currentLocation) || locations[0]
@@ -197,6 +263,12 @@ export default function ExplorationScreen() {
 
         {/* Actions Panel */}
         <div className="space-y-4">
+          {/* Meta-Game Panel */}
+          <MetaGamePanel />
+
+          {/* Quest Tracker */}
+          <QuestTracker />
+
           {/* Location Info */}
           <Card className="p-6">
             <h4 className="text-xl font-bold mb-3">Current Location</h4>
@@ -209,20 +281,66 @@ export default function ExplorationScreen() {
 
           {/* Quick Actions */}
           <Card className="p-6">
-            <h4 className="text-xl font-bold mb-4">Quick Actions</h4>
-            <div className="space-y-3">
-              {enemies.map((enemy, i) => (
+            <div className="flex items-center justify-between mb-4">
+              <h4 className="text-xl font-bold">Quick Actions</h4>
+              <div className="flex gap-2">
                 <Button
-                  key={i}
-                  onClick={() => startBattle(enemy)}
-                  variant="primary"
-                  className="w-full p-4 hover:scale-105 transform transition-all"
+                  onClick={() => useGameStore.getState().setScreen('inventory' as any)}
+                  variant="secondary"
+                  className="text-xs px-3 py-1"
+                >
+                  🎒
+                </Button>
+                <Button
+                  onClick={() => useGameStore.getState().setScreen('shop' as any)}
+                  variant="secondary"
+                  className="text-xs px-3 py-1"
+                >
+                  🛒
+                </Button>
+              </div>
+            </div>
+            
+            {/* Random Encounter Button */}
+            {encounterAvailable && (
+              <Button
+                onClick={handleRandomEncounter}
+                variant="primary"
+                className="w-full p-4 mb-3 hover:scale-105 transform transition-all bg-purple-600 hover:bg-purple-700 animate-pulse"
+              >
+                <div className="flex items-center gap-3">
+                  <span className="text-3xl">⚡</span>
+                  <div className="text-left">
+                    <p className="font-bold">Random Encounter!</p>
+                    <p className="text-xs text-gray-300">Click to trigger</p>
+                  </div>
+                </div>
+              </Button>
+            )}
+
+            <div className="space-y-3">
+              {enemies.map((enemy, index) => (
+                <Button
+                  key={enemy.id || `enemy-${index}`}
+                  onClick={() => handleBattleEnemy(enemy)}
+                  variant={enemy.isBoss ? "primary" : "secondary"}
+                  className={`w-full p-4 hover:scale-105 transform transition-all ${
+                    enemy.isBoss ? 'bg-red-600 hover:bg-red-700' : ''
+                  }`}
                 >
                   <div className="flex items-center gap-3">
-                    <span className="text-3xl">{enemy.icon}</span>
-                    <div className="text-left">
-                      <p className="font-bold">Battle {enemy.name}</p>
-                      <p className="text-xs text-gray-300">HP: {enemy.hp}</p>
+                    <span className="text-3xl">
+                      {enemy.type === 'rock' ? '🗿' : enemy.type === 'paper' ? '📜' : '✂️'}
+                    </span>
+                    <div className="text-left flex-1">
+                      <div className="flex items-center gap-2">
+                        <p className="font-bold">{enemy.name}</p>
+                        {enemy.isBoss && <span className="text-xs bg-red-500 px-2 py-0.5 rounded">BOSS</span>}
+                      </div>
+                      <p className="text-xs text-gray-300">HP: {enemy.maxHP}</p>
+                      {enemy.description && (
+                        <p className="text-xs text-gray-400 italic">{enemy.description}</p>
+                      )}
                     </div>
                   </div>
                 </Button>
