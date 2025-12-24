@@ -6,7 +6,10 @@
 import { Enemy, Quest, Location, Item } from '@/lib/types/game'
 import { generateEnemy, generateQuest, getRandomEncounter, generateItem, generateLocation } from './random-generation'
 import { fetchMonsterInspiration, fetchLoreInspiration } from './digital-library'
-import { randomInt } from '@/lib/utils/game-helpers'
+// Helper function for random integers
+function randomInt(min: number, max: number): number {
+  return Math.floor(Math.random() * (max - min + 1)) + min
+}
 
 export interface Encounter {
   id: string

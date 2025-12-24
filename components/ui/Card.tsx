@@ -5,7 +5,7 @@ interface CardProps {
   className?: string
 }
 
-export default function Card({ children, className = '' }: CardProps) {
+export function Card({ children, className = '' }: CardProps) {
   return (
     <div className={`bg-gray-800 border border-gray-700 rounded-lg ${className}`}>
       {children}
@@ -13,5 +13,5 @@ export default function Card({ children, className = '' }: CardProps) {
   )
 }
 
-// Default export for compatibility
+// ✅ SINGLE default export
 export default Card
