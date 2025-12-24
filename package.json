@@ -7,7 +7,10 @@
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
-    "type-check": "tsc --noEmit"
+    "type-check": "tsc --noEmit",
+    "setup:audio": "node -e \"const fs=require('fs');const dirs=['public/audio/music','public/audio/sfx/ui','public/audio/sfx/combat','public/audio/sfx/moves','public/audio/sfx/ultimate','public/audio/sfx/feedback'];dirs.forEach(d=>fs.mkdirSync(d,{recursive:true}));fs.writeFileSync('public/audio/.gitkeep','# Add audio files here\\n');console.log('✅ Audio directories created')\"",
+    "deploy": "vercel --prod",
+    "deploy:preview": "vercel"
   },
   "dependencies": {
     "framer-motion": "^11.0.0",

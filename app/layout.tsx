@@ -2,7 +2,11 @@
 
 import { useEffect } from 'react'
 import { Inter } from 'next/font/google'
+import type { Metadata } from 'next'
 import './globals.css'
+
+// Note: Metadata export doesn't work with 'use client'
+// For SEO, create a separate metadata file or use next/head
 import { getAudioManager } from '@/lib/systems/audio'
 import { getSaveSystem } from '@/lib/systems/save-system'
 import ParticleCanvas from '@/components/effects/ParticleCanvas'
@@ -10,6 +14,7 @@ import { useAutoSave } from '@/lib/hooks/useAutoSave'
 import { useKeyboardShortcuts } from '@/lib/hooks/useKeyboardShortcuts'
 import QuestTracker from '@/components/ui/QuestTracker'
 import AutoSaveIndicator from '@/components/ui/AutoSaveIndicator'
+import AchievementNotification from '@/components/ui/AchievementNotification'
 
 const inter = Inter({ subsets: ['latin'] })
 
@@ -68,6 +73,7 @@ export default function RootLayout({
         <ParticleCanvas />
         <QuestTracker />
         <AutoSaveIndicator />
+        <AchievementNotification />
       </body>
     </html>
   )
