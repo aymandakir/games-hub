@@ -8,15 +8,6 @@ module.exports = {
   theme: {
     extend: {
       colors: {
-        rock: { primary: '#3a3a3a', secondary: '#6b4423', accent: '#8b2635' },
-        paper: { primary: '#ffffff', secondary: '#a8d5e2', accent: '#f7dc6f' },
-        scissors: { primary: '#c9c9c9', secondary: '#6a4c93', accent: '#00d4ff' },
-      },
-    },
-  },
-  theme: {
-    extend: {
-      colors: {
         rock: {
           primary: '#3a3a3a',
           secondary: '#6b4423',
@@ -57,6 +48,7 @@ module.exports = {
         'particle-burst': 'particleBurst 0.8s ease-out',
         'spin-slow': 'spin 3s linear infinite',
         'bounce-slow': 'bounce 2s infinite',
+        'pulse-slow': 'pulse 3s cubic-bezier(0.4, 0, 0.6, 1) infinite',
       },
       keyframes: {
         fadeIn: {
@@ -92,4 +84,3 @@ module.exports = {
   },
   plugins: [],
 }
-
