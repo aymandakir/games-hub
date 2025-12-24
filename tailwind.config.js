@@ -8,6 +8,15 @@ module.exports = {
   theme: {
     extend: {
       colors: {
+        rock: { primary: '#3a3a3a', secondary: '#6b4423', accent: '#8b2635' },
+        paper: { primary: '#ffffff', secondary: '#a8d5e2', accent: '#f7dc6f' },
+        scissors: { primary: '#c9c9c9', secondary: '#6a4c93', accent: '#00d4ff' },
+      },
+    },
+  },
+  theme: {
+    extend: {
+      colors: {
         rock: {
           primary: '#3a3a3a',
           secondary: '#6b4423',
