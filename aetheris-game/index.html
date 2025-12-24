@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Aetheris: The Symbol War - Game Hub</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'Segoe UI', sans-serif;
+            background: linear-gradient(135deg, #000000 0%, #1a1a2e 50%, #16213e 100%);
+            color: #ffffff;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 800px;
+            width: 100%;
+            text-align: center;
+        }
+
+        .logo {
+            font-size: 72px;
+            font-weight: 700;
+            margin-bottom: 20px;
+            background: linear-gradient(135deg, #3b82f6 0%, #8b5cf6 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .subtitle {
+            font-size: 24px;
+            color: rgba(255, 255, 255, 0.7);
+            margin-bottom: 40px;
+        }
+
+        .description {
+            font-size: 18px;
+            line-height: 1.8;
+            color: rgba(255, 255, 255, 0.8);
+            margin-bottom: 50px;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .play-button {
+            display: inline-block;
+            background: linear-gradient(135deg, #3b82f6 0%, #8b5cf6 100%);
+            color: white;
+            padding: 20px 60px;
+            font-size: 24px;
+            font-weight: 600;
+            border-radius: 50px;
+            text-decoration: none;
+            transition: all 0.3s ease;
+            box-shadow: 0 10px 30px rgba(59, 130, 246, 0.3);
+            margin-bottom: 30px;
+        }
+
+        .play-button:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 15px 40px rgba(59, 130, 246, 0.4);
+        }
+
+        .play-button:active {
+            transform: translateY(-1px);
+        }
+
+        .back-link {
+            display: inline-block;
+            color: rgba(255, 255, 255, 0.6);
+            text-decoration: none;
+            font-size: 16px;
+            margin-top: 30px;
+            transition: color 0.3s ease;
+        }
+
+        .back-link:hover {
+            color: rgba(255, 255, 255, 0.9);
+        }
+
+        .features {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin-top: 50px;
+            text-align: left;
+        }
+
+        .feature {
+            background: rgba(255, 255, 255, 0.05);
+            padding: 20px;
+            border-radius: 15px;
+            backdrop-filter: blur(10px);
+        }
+
+        .feature h3 {
+            font-size: 18px;
+            margin-bottom: 10px;
+        }
+
+        .feature p {
+            font-size: 14px;
+            color: rgba(255, 255, 255, 0.7);
+        }
+
+        @media (max-width: 768px) {
+            .logo {
+                font-size: 48px;
+            }
+            .subtitle {
+                font-size: 20px;
+            }
+            .description {
+                font-size: 16px;
+            }
+            .play-button {
+                padding: 16px 40px;
+                font-size: 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1 class="logo">AETHERIS</h1>
+        <p class="subtitle">The Symbol War</p>
+        
+        <p class="description">
+            An epic fantasy RPG where Rock, Paper, Scissors define magic, culture, and combat. 
+            Choose your character and restore balance to Aetheris!
+        </p>
+
+        <a href="app/game" class="play-button">Begin Adventure</a>
+
+        <div class="features">
+            <div class="feature">
+                <h3>⚔️ Strategic Combat</h3>
+                <p>Rock-Paper-Scissors battles with RPG depth</p>
+            </div>
+            <div class="feature">
+                <h3>🎭 Rich Story</h3>
+                <p>Choose between Kael or Lyra and shape your journey</p>
+            </div>
+            <div class="feature">
+                <h3>🗺️ Explore Aetheris</h3>
+                <p>Travel through Rock, Paper, and Scissor dominions</p>
+            </div>
+        </div>
+
+        <a href="../" class="back-link">← Back to Game Hub</a>
+    </div>
+</body>
+</html>
