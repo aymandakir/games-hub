@@ -1,7 +1,7 @@
 'use client'
 
 import { useGameStore } from '@/lib/store/gameStore'
-import TitleScreen from '@/app/page'
+import TitleScreen from '@/components/screens/TitleScreen'
 import CharacterSelect from '@/components/screens/CharacterSelect'
 import ExplorationScreen from '@/components/screens/ExplorationScreen'
 import CombatScreen from '@/components/screens/CombatScreen'
