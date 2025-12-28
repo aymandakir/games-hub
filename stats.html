@@ -1,0 +1,420 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Game Statistics - Game Hub</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 40px 20px;
+            color: #333;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        h1 {
+            text-align: center;
+            color: white;
+            font-size: 48px;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+
+        .subtitle {
+            text-align: center;
+            color: rgba(255,255,255,0.9);
+            font-size: 18px;
+            margin-bottom: 40px;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin-bottom: 40px;
+        }
+
+        .stat-card {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 16px;
+            padding: 24px;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.1);
+            backdrop-filter: blur(10px);
+            transition: transform 0.2s;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-4px);
+        }
+
+        .stat-card h3 {
+            font-size: 14px;
+            color: #666;
+            margin-bottom: 8px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .stat-card .value {
+            font-size: 32px;
+            font-weight: bold;
+            color: #667eea;
+            margin-bottom: 4px;
+        }
+
+        .stat-card .label {
+            font-size: 12px;
+            color: #999;
+        }
+
+        .section {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 16px;
+            padding: 32px;
+            margin-bottom: 30px;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.1);
+            backdrop-filter: blur(10px);
+        }
+
+        .section h2 {
+            font-size: 24px;
+            margin-bottom: 20px;
+            color: #333;
+            border-bottom: 2px solid #667eea;
+            padding-bottom: 10px;
+        }
+
+        .game-stats {
+            display: grid;
+            gap: 16px;
+        }
+
+        .game-item {
+            display: grid;
+            grid-template-columns: 50px 1fr auto auto auto;
+            gap: 16px;
+            align-items: center;
+            padding: 16px;
+            background: #f8f9fa;
+            border-radius: 12px;
+            transition: background 0.2s;
+        }
+
+        .game-item:hover {
+            background: #e9ecef;
+        }
+
+        .game-icon {
+            font-size: 32px;
+            text-align: center;
+        }
+
+        .game-info h4 {
+            font-size: 18px;
+            color: #333;
+            margin-bottom: 4px;
+        }
+
+        .game-info p {
+            font-size: 14px;
+            color: #666;
+        }
+
+        .stat-value {
+            text-align: right;
+            font-weight: 600;
+            color: #333;
+        }
+
+        .stat-label {
+            text-align: right;
+            font-size: 12px;
+            color: #999;
+        }
+
+        .events-list {
+            max-height: 400px;
+            overflow-y: auto;
+        }
+
+        .event-item {
+            padding: 12px;
+            border-bottom: 1px solid #e9ecef;
+            font-size: 14px;
+        }
+
+        .event-item:last-child {
+            border-bottom: none;
+        }
+
+        .event-name {
+            font-weight: 600;
+            color: #667eea;
+            margin-right: 8px;
+        }
+
+        .event-time {
+            color: #999;
+            font-size: 12px;
+        }
+
+        .event-data {
+            color: #666;
+            font-size: 12px;
+            margin-top: 4px;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 60px 20px;
+            color: #999;
+        }
+
+        .empty-state-icon {
+            font-size: 64px;
+            margin-bottom: 16px;
+        }
+
+        .back-link {
+            display: inline-block;
+            margin-top: 20px;
+            color: white;
+            text-decoration: none;
+            padding: 12px 24px;
+            background: rgba(255,255,255,0.2);
+            border-radius: 8px;
+            transition: background 0.2s;
+        }
+
+        .back-link:hover {
+            background: rgba(255,255,255,0.3);
+        }
+
+        @media (max-width: 768px) {
+            h1 {
+                font-size: 32px;
+            }
+
+            .game-item {
+                grid-template-columns: 40px 1fr;
+                gap: 12px;
+            }
+
+            .stat-value, .stat-label {
+                text-align: left;
+                margin-top: 4px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>📊 Game Statistics</h1>
+        <p class="subtitle">Track your gaming activity and engagement metrics</p>
+
+        <!-- Platform Overview -->
+        <div class="stats-grid" id="platformStats">
+            <!-- Will be populated by JavaScript -->
+        </div>
+
+        <!-- Game Statistics -->
+        <div class="section">
+            <h2>🎮 Game Performance</h2>
+            <div class="game-stats" id="gameStats">
+                <!-- Will be populated by JavaScript -->
+            </div>
+        </div>
+
+        <!-- Recent Events -->
+        <div class="section">
+            <h2>📈 Recent Activity</h2>
+            <div class="events-list" id="recentEvents">
+                <!-- Will be populated by JavaScript -->
+            </div>
+        </div>
+
+        <div style="text-align: center;">
+            <a href="index.html" class="back-link">← Back to Game Hub</a>
+        </div>
+    </div>
+
+    <script>
+        // Game metadata
+        const gameMetadata = {
+            'neon-breakout': { name: 'Neon Breakout', icon: '💥', category: 'Arcade' },
+            'pixel-garden': { name: 'Pixel Garden', icon: '🌱', category: 'Casual' },
+            'geometry-dash-mini': { name: 'Geometry Dash Mini', icon: '⚡', category: 'Arcade' }
+        };
+
+        // Load and process analytics data
+        function loadStats() {
+            const allSessions = JSON.parse(localStorage.getItem('gameSessions') || '[]');
+            
+            if (allSessions.length === 0) {
+                document.getElementById('platformStats').innerHTML = `
+                    <div class="empty-state">
+                        <div class="empty-state-icon">📊</div>
+                        <h3>No statistics yet</h3>
+                        <p>Start playing games to see your stats here!</p>
+                    </div>
+                `;
+                document.getElementById('gameStats').innerHTML = '<div class="empty-state">No game data available</div>';
+                document.getElementById('recentEvents').innerHTML = '<div class="empty-state">No events recorded</div>';
+                return;
+            }
+
+            // Process sessions
+            const gameStats = {};
+            let totalSessions = 0;
+            let totalPlayTime = 0;
+            let totalEvents = 0;
+            const recentEvents = [];
+
+            allSessions.forEach(session => {
+                totalSessions++;
+                const sessionDuration = (session.sessionEnd - session.sessionStart) / 1000;
+                totalPlayTime += sessionDuration;
+                totalEvents += session.events.length;
+
+                if (!gameStats[session.gameId]) {
+                    gameStats[session.gameId] = {
+                        sessions: 0,
+                        totalTime: 0,
+                        events: [],
+                        lastPlayed: 0
+                    };
+                }
+
+                gameStats[session.gameId].sessions++;
+                gameStats[session.gameId].totalTime += sessionDuration;
+                gameStats[session.gameId].events.push(...session.events);
+                gameStats[session.gameId].lastPlayed = Math.max(
+                    gameStats[session.gameId].lastPlayed,
+                    session.sessionEnd
+                );
+
+                // Collect recent events
+                session.events.forEach(event => {
+                    recentEvents.push({
+                        ...event,
+                        gameId: session.gameId
+                    });
+                });
+            });
+
+            // Sort recent events by timestamp
+            recentEvents.sort((a, b) => b.timestamp - a.timestamp);
+
+            // Display platform stats
+            const avgSessionTime = totalSessions > 0 ? totalPlayTime / totalSessions : 0;
+            document.getElementById('platformStats').innerHTML = `
+                <div class="stat-card">
+                    <h3>Total Sessions</h3>
+                    <div class="value">${totalSessions}</div>
+                    <div class="label">Game sessions played</div>
+                </div>
+                <div class="stat-card">
+                    <h3>Total Play Time</h3>
+                    <div class="value">${formatTime(totalPlayTime)}</div>
+                    <div class="label">Across all games</div>
+                </div>
+                <div class="stat-card">
+                    <h3>Average Session</h3>
+                    <div class="value">${formatTime(avgSessionTime)}</div>
+                    <div class="label">Per game session</div>
+                </div>
+                <div class="stat-card">
+                    <h3>Total Events</h3>
+                    <div class="value">${totalEvents}</div>
+                    <div class="label">Actions tracked</div>
+                </div>
+            `;
+
+            // Display game stats
+            const gameStatsHTML = Object.entries(gameStats)
+                .sort((a, b) => b[1].sessions - a[1].sessions)
+                .map(([gameId, stats]) => {
+                    const game = gameMetadata[gameId] || { name: gameId, icon: '🎮', category: 'Unknown' };
+                    const avgTime = stats.sessions > 0 ? stats.totalTime / stats.sessions : 0;
+                    const completionRate = stats.events.filter(e => e.name === 'victory').length;
+                    const gameOverCount = stats.events.filter(e => e.name === 'game_over').length;
+                    const completionPercent = (gameOverCount + completionRate) > 0 
+                        ? Math.round((completionRate / (gameOverCount + completionRate)) * 100) 
+                        : 0;
+
+                    return `
+                        <div class="game-item">
+                            <div class="game-icon">${game.icon}</div>
+                            <div class="game-info">
+                                <h4>${game.name}</h4>
+                                <p>${game.category}</p>
+                            </div>
+                            <div>
+                                <div class="stat-value">${stats.sessions}</div>
+                                <div class="stat-label">Sessions</div>
+                            </div>
+                            <div>
+                                <div class="stat-value">${formatTime(avgTime)}</div>
+                                <div class="stat-label">Avg. Time</div>
+                            </div>
+                            <div>
+                                <div class="stat-value">${completionPercent}%</div>
+                                <div class="stat-label">Completion</div>
+                            </div>
+                        </div>
+                    `;
+                }).join('');
+
+            document.getElementById('gameStats').innerHTML = gameStatsHTML || '<div class="empty-state">No game data available</div>';
+
+            // Display recent events (last 20)
+            const recentEventsHTML = recentEvents.slice(0, 20).map(event => {
+                const game = gameMetadata[event.gameId] || { name: event.gameId, icon: '🎮' };
+                const eventTime = new Date(event.timestamp).toLocaleString();
+                const dataStr = Object.entries(event.data || {})
+                    .map(([key, value]) => `${key}: ${value}`)
+                    .join(', ');
+
+                return `
+                    <div class="event-item">
+                        <span class="event-name">${event.name}</span>
+                        <span class="event-time">${eventTime}</span>
+                        <div style="margin-top: 4px; color: #999; font-size: 12px;">
+                            ${game.icon} ${game.name}
+                        </div>
+                        ${dataStr ? `<div class="event-data">${dataStr}</div>` : ''}
+                    </div>
+                `;
+            }).join('');
+
+            document.getElementById('recentEvents').innerHTML = recentEventsHTML || '<div class="empty-state">No events recorded</div>';
+        }
+
+        function formatTime(seconds) {
+            if (seconds < 60) return `${Math.round(seconds)}s`;
+            const mins = Math.floor(seconds / 60);
+            const secs = Math.round(seconds % 60);
+            if (mins < 60) return `${mins}m ${secs}s`;
+            const hours = Math.floor(mins / 60);
+            const remainingMins = mins % 60;
+            return `${hours}h ${remainingMins}m`;
+        }
+
+        // Load stats on page load
+        loadStats();
+    </script>
+</body>
+</html>
+

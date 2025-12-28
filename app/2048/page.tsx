@@ -255,3 +255,5 @@ export default function Game2048() {
   )
 }
 
+
+
