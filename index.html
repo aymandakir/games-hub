@@ -1119,7 +1119,7 @@
 
         // Games Array and Management System
         (function() {
-            // Games metadata array
+            // Games metadata array - ONLY games that exist as HTML files
             const gamesData = [
                 {
                     id: 'aetheris',
@@ -1155,39 +1155,6 @@
                     isNew: false
                 },
                 {
-                    id: 'hub',
-                    title: 'Game Hub',
-                    description: 'Browse all games organized by category. Search, filter, and discover new games. Featured games, stats, and more!',
-                    url: '/hub',
-                    icon: '🏠',
-                    tags: ['Hub', 'All Games'],
-                    category: 'casual',
-                    gradient: null,
-                    isNew: false
-                },
-                {
-                    id: 'random-games',
-                    title: 'Random Games',
-                    description: 'Procedurally generated games using AI-powered design patterns. Every game is unique! Explore puzzle, arcade, strategy, and more.',
-                    url: '/random-games',
-                    icon: '🎲',
-                    tags: ['Procedural', 'Infinite Variety'],
-                    category: 'puzzle',
-                    gradient: null,
-                    isNew: false
-                },
-                {
-                    id: 'stats',
-                    title: 'Game Statistics',
-                    description: 'Track your gaming activity, view most played games, and see your achievements. Monitor your progress!',
-                    url: '/stats',
-                    icon: '📊',
-                    tags: ['Stats', 'Analytics'],
-                    category: 'casual',
-                    gradient: null,
-                    isNew: false
-                },
-                {
                     id: 'neon-breakout',
                     title: 'Neon Breakout',
                     description: 'Classic arcade action with cyberpunk visuals! Break all the bricks with your neon paddle. Collect power-ups, dodge obstacles, and achieve the highest score. Synthwave aesthetics meet retro gameplay.',
@@ -1219,6 +1186,17 @@
                     category: 'arcade',
                     gradient: 'linear-gradient(135deg, rgba(0, 255, 0, 0.2) 0%, rgba(0, 200, 0, 0.2) 100%)',
                     isNew: true
+                },
+                {
+                    id: 'stats',
+                    title: 'Game Statistics',
+                    description: 'Track your gaming activity, view most played games, and see your achievements. Monitor your progress!',
+                    url: 'stats.html',
+                    icon: '📊',
+                    tags: ['Stats', 'Analytics'],
+                    category: 'casual',
+                    gradient: null,
+                    isNew: false
                 }
             ];
 
